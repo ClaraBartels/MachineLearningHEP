@@ -16,6 +16,8 @@
 main script for doing data processing, machine learning and analysis
 """
 # pylint: disable=too-many-lines
+import os
+import sys
 import math
 from array import array
 import pickle
@@ -26,9 +28,10 @@ from root_numpy import fill_hist # pylint: disable=import-error, no-name-in-modu
 from ROOT import TFile, TH1F, TH2F, RooUnfoldResponse # pylint: disable=import-error, no-name-in-module
 from machine_learning_hep.bitwise import tag_bit_df
 from machine_learning_hep.utilities import selectdfrunlist, seldf_singlevar, openfile
-from machine_learning_hep.utilities import create_folder_struc, mergerootfiles, get_timestamp_string
+from machine_learning_hep.utilities import create_folder_struc, mergerootfiles, get_timestamp_string, make_message_notfound
 from machine_learning_hep.utilities import z_calc, z_gen_calc
-from machine_learning_hep.utilities_plot import buildhisto, build2dhisto, fill2dhist, makefill3dhist
+from machine_learning_hep.utilities_plot import buildhisto, build2dhisto, fill2dhist, fillweighed
+from machine_learning_hep.utilities_plot import makefill3dhist, makefill2dhist, fill2dweighed
 from machine_learning_hep.processer import Processer
 #from machine_learning_hep.selectionutils import selectpid_dzerotokpi
 
@@ -126,6 +129,40 @@ def adjust_nsd(df_):
         df_["nsd_gen_jet"] = c_gen_new
     return df_
 
+def adjust_zg(df_):
+    """ Replace negative z_{g} values with zg_neg. """
+    zg_neg = -0.1
+    if "zg_jet" in df_.columns and "zg_jet_orig" not in df_.columns:
+        listzg_old = df_["zg_jet"].to_numpy()
+        df_["zg_jet_orig"] = listzg_old
+        c_new = [zg_neg if zg_old < 0 else zg_old for zg_old in listzg_old]
+        df_ = df_.drop(["zg_jet"], axis=1)
+        df_["zg_jet"] = c_new
+    if "zg_gen_jet" in df_.columns and "zg_gen_jet_orig" not in df_.columns:
+        listzg_gen_old = df_["zg_gen_jet"].to_numpy()
+        df_["zg_gen_jet_orig"] = listzg_gen_old
+        c_gen_new = [zg_neg if zg_old < 0 else zg_old for zg_old in listzg_gen_old]
+        df_ = df_.drop(["zg_gen_jet"], axis=1)
+        df_["zg_gen_jet"] = c_gen_new
+    return df_
+
+def adjust_rg(df_):
+    """ Replace negative R_{g} values with rg_neg. """
+    rg_neg = -0.1
+    if "rg_jet" in df_.columns and "rg_jet_orig" not in df_.columns:
+        listrg_old = df_["rg_jet"].to_numpy()
+        df_["rg_jet_orig"] = listrg_old
+        c_new = [rg_neg if rg_old < 0 else rg_old for rg_old in listrg_old]
+        df_ = df_.drop(["rg_jet"], axis=1)
+        df_["rg_jet"] = c_new
+    if "rg_gen_jet" in df_.columns and "rg_gen_jet_orig" not in df_.columns:
+        listrg_gen_old = df_["rg_gen_jet"].to_numpy()
+        df_["rg_gen_jet_orig"] = listrg_gen_old
+        c_gen_new = [rg_neg if rg_old < 0 else rg_old for rg_old in listrg_gen_old]
+        df_ = df_.drop(["rg_gen_jet"], axis=1)
+        df_["rg_gen_jet"] = c_gen_new
+    return df_
+
 def adjust_z(df_):
     """ Truncate z values to avoid z = 1 overflow. """
     z_max = 0.99
@@ -213,21 +250,37 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
         self.varshapebinarray_gen = array("d", self.varshaperanges_gen) # array of bin edges to use in histogram constructors
 
         self.closure_frac = datap["analysis"][self.typean].get("sel_closure_frac", None)
-        self.doprior = datap["analysis"][self.typean]["doprior"]
+        self.doprior = datap["analysis"][self.typean].get("doprior", None)
+        self.domodeldep = datap["analysis"][self.typean].get("domodeldep", None)
+        self.path_modeldep = datap["analysis"][self.typean].get("path_modeldep", None)
 
         # selection
         self.s_evtsel = datap["analysis"][self.typean]["evtsel"]
-        self.s_jetsel_gen = datap["analysis"][self.typean]["jetsel_gen"]
-        self.s_jetsel_reco = datap["analysis"][self.typean]["jetsel_reco"]
+        self.s_jetsel_gen = datap["analysis"][self.typean].get("jetsel_gen", None)
+        self.s_jetsel_reco = datap["analysis"][self.typean].get("jetsel_reco", None)
+        self.s_jetsel_gen_matched_reco = datap["analysis"][self.typean].get("jetsel_gen_matched_reco", None)
         self.s_trigger = datap["analysis"][self.typean]["triggersel"][self.mcordata]
         self.triggerbit = datap["analysis"][self.typean]["triggerbit"]
         self.runlistrigger = runlisttrigger
 
+        # efficiency corrections for the response matrix
+        self.d_resultsallpmc = datap["analysis"][self.typean]["mc"]["resultsallp"]
+        self.doeff_resp = datap["analysis"][self.typean].get("doeff_resp", False)
+        print("efficiency corrections for the response matrix:", self.doeff_resp)
+        self.file_efficiency = os.path.join(self.d_resultsallpmc, "efficiencies.root")
+
         self.p_usejetptbinned_deff = \
             datap["analysis"][self.typean].get("usejetptbinned_deff", False)
-        print("use jet binned efficiency", self.p_usejetptbinned_deff)
+        print("use jet binned efficiency:", self.p_usejetptbinned_deff)
 
-    # pylint: disable=too-many-branches
+        self.p_eff_overflow = \
+            datap["analysis"][self.typean].get("eff_overflow", True)
+        self.var2_low_inc = datap["analysis"][self.typean].get("var2_low_inc", 5.0) # lower pt edge (efficiency calc.)
+        self.var2_up_inc = datap["analysis"][self.typean].get("var2_up_inc", 30.0) # upper pt edge (efficiency calc.)
+        print("calculate efficiency pt_jet in range:", self.var2_low_inc, "--", self.var2_up_inc, self.p_eff_overflow)
+
+        # pylint: disable=too-many-branches
+
     def process_histomass_single(self, index):
         myfile = TFile.Open(self.l_histomass[index], "recreate")
 
@@ -253,6 +306,8 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
             else:
                 df = pickle.load(openfile(self.mptfiles_recoskmldec[bin_id][index], "rb"))
             df = adjust_nsd(df)
+            df = adjust_zg(df)
+            df = adjust_rg(df)
             if self.doml is True:
                 df = df.query(self.l_selml[ipt])
             # custom cuts
@@ -307,10 +362,10 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
                 myfile.cd()
                 h_invmass.Write()
 
-                massarray = [1.0 + i * (5.0 / 5000.0) for i in range(5001)] # 5000 bins in range 1.0-6.0
+                massarray = [1.0 + i * (5.0 / 50000.0) for i in range(50001)] # 50000 bins in range 1.0-6.0
                 massarray_reco = array("d", massarray)
                 h_zvsinvmass = TH2F("hzvsmass" + suffix, "", \
-                    5000, massarray_reco, self.p_nbinshape_reco, self.varshapebinarray_reco)
+                    50000, massarray_reco, self.p_nbinshape_reco, self.varshapebinarray_reco)
                 h_zvsinvmass.Sumw2()
                 fill2dhist(df_bin, h_zvsinvmass, "inv_mass", self.v_varshape_binning)
                 h_zvsinvmass.Write()
@@ -335,8 +390,6 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
     def process_efficiency_single(self, index):
         out_file = TFile.Open(self.l_histoeff[index], "recreate")
 
-        cut_d0y = "abs(y_cand) < 0.8 and abs(z_vtx_gen) < 10" # FIXME Fix this via the database. pylint: disable=fixme
-
         # matched rec level jets
         h2_ptcand_ptjet_rec_overflow = build2dhisto("h2_ptcand_ptjet_rec_overflow", self.var1binarray, self.var2binarray_reco)
         h2_ptcand_ptjet_rec = build2dhisto("h2_ptcand_ptjet_rec", self.var1binarray, self.var2binarray_reco)
@@ -354,7 +407,10 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
                     bin_id = self.bin_matching[ipt]
                     df_mc_gen = pickle.load(openfile(self.mptfiles_gensk[bin_id][index], "rb"))
                     df_mc_gen = adjust_nsd(df_mc_gen)
-                    df_mc_gen = df_mc_gen.query(self.s_jetsel_gen)
+                    df_mc_gen = adjust_zg(df_mc_gen)
+                    df_mc_gen = adjust_rg(df_mc_gen)
+                    if self.s_jetsel_gen is not None:
+                        df_mc_gen = df_mc_gen.query(self.s_jetsel_gen)
                     if self.runlistrigger is not None:
                         df_mc_gen = selectdfrunlist(df_mc_gen, \
                                  self.run_param[self.runlistrigger], "run_number")
@@ -409,11 +465,12 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
                 else:
                     df_mc_reco = pickle.load(openfile(self.mptfiles_recoskmldec[bin_id][index], "rb"))
                 df_mc_reco = adjust_nsd(df_mc_reco)
+                df_mc_reco = adjust_zg(df_mc_reco)
+                df_mc_reco = adjust_rg(df_mc_reco)
                 if self.s_evtsel is not None:
                     df_mc_reco = df_mc_reco.query(self.s_evtsel)
                 if self.s_jetsel_reco is not None:
-                    if self.p_usejetptbinned_deff is True:
-                        df_mc_reco = df_mc_reco.query(self.s_jetsel_reco)
+                    df_mc_reco = df_mc_reco.query(self.s_jetsel_reco)
                 if self.s_trigger is not None:
                     df_mc_reco = df_mc_reco.query(self.s_trigger)
                 if self.runlistrigger is not None:
@@ -421,9 +478,10 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
                              self.run_param[self.runlistrigger], "run_number")
                 df_mc_gen = pickle.load(openfile(self.mptfiles_gensk[bin_id][index], "rb"))
                 df_mc_gen = adjust_nsd(df_mc_gen)
-                if self.p_usejetptbinned_deff is True:
+                df_mc_gen = adjust_zg(df_mc_gen)
+                df_mc_gen = adjust_rg(df_mc_gen)
+                if self.s_jetsel_gen is not None:
                     df_mc_gen = df_mc_gen.query(self.s_jetsel_gen)
-                df_mc_gen = df_mc_gen.query(cut_d0y)
                 if self.runlistrigger is not None:
                     df_mc_gen = selectdfrunlist(df_mc_gen, \
                              self.run_param[self.runlistrigger], "run_number")
@@ -436,6 +494,11 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
                         self.lvar2_binmin_reco[ibin2], self.lvar2_binmax_reco[ibin2])
                     df_mc_gen = seldf_singlevar(df_mc_gen, self.v_var2_binning, \
                         self.lvar2_binmin_reco[ibin2], self.lvar2_binmax_reco[ibin2]) # FIXME use lvar2_binmin_gen pylint: disable=fixme
+                else:
+                    df_mc_reco = seldf_singlevar(df_mc_reco, self.v_var2_binning, \
+                        self.lvar2_binmin_reco[0], self.lvar2_binmax_reco[-1])
+                    df_mc_gen = seldf_singlevar(df_mc_gen, self.v_var2_binning, \
+                        self.lvar2_binmin_reco[0], self.lvar2_binmax_reco[-1])  # FIXME use lvar2_binmin_gen pylint: disable=fixme
 
                 df_mc_gen["z"] = z_calc(df_mc_gen.pt_jet, df_mc_gen.phi_jet, df_mc_gen.eta_jet,
                                         df_mc_gen.pt_cand, df_mc_gen.phi_cand, df_mc_gen.eta_cand)
@@ -529,6 +592,8 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
                 else:
                     df_mc_reco = pickle.load(openfile(self.mptfiles_recoskmldec[bin_id][index], "rb"))
                 df_mc_reco = adjust_nsd(df_mc_reco)
+                df_mc_reco = adjust_zg(df_mc_reco)
+                df_mc_reco = adjust_rg(df_mc_reco)
                 if self.s_evtsel is not None:
                     df_mc_reco = df_mc_reco.query(self.s_evtsel)
                 if self.s_jetsel_reco is not None:
@@ -587,24 +652,56 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
 
     def create_df_closure(self, df_):
         df_tmp_selgen = df_.copy()
+        if self.s_jetsel_gen_matched_reco is not None:
+            df_tmp_selgen = df_tmp_selgen.query(self.s_jetsel_gen_matched_reco)
         df_tmp_selgen = seldf_singlevar(df_tmp_selgen, self.v_varshape_binning_gen, \
             self.lvarshape_binmin_gen[0], self.lvarshape_binmax_gen[-1])
         df_tmp_selgen = seldf_singlevar(df_tmp_selgen, "pt_gen_jet", \
             self.lvar2_binmin_gen[0], self.lvar2_binmax_gen[-1])
 
         df_tmp_selreco = df_.copy()
+        if self.s_jetsel_reco is not None:
+            df_tmp_selreco = df_tmp_selreco.query(self.s_jetsel_reco)
         df_tmp_selreco = seldf_singlevar(df_tmp_selreco, "pt_jet", \
             self.lvar2_binmin_reco[0], self.lvar2_binmax_reco[-1])
         df_tmp_selreco = seldf_singlevar(df_tmp_selreco, self.v_varshape_binning, \
             self.lvarshape_binmin_reco[0], self.lvarshape_binmax_reco[-1])
 
         df_tmp_selrecogen = df_tmp_selgen.copy()
+        if self.s_jetsel_reco is not None:
+            df_tmp_selrecogen = df_tmp_selrecogen.query(self.s_jetsel_reco)
         df_tmp_selrecogen = seldf_singlevar(df_tmp_selrecogen, "pt_jet", \
             self.lvar2_binmin_reco[0], self.lvar2_binmax_reco[-1])
         df_tmp_selrecogen = seldf_singlevar(df_tmp_selrecogen, self.v_varshape_binning, \
             self.lvarshape_binmin_reco[0], self.lvarshape_binmax_reco[-1])
 
         return df_tmp_selgen, df_tmp_selreco, df_tmp_selrecogen
+
+    def effcorr_response(self, df_noeffcorr):
+        eff_file = TFile.Open(self.file_efficiency)
+        if self.p_usejetptbinned_deff is True:
+            bin_range = self.p_nbin2_reco
+        else:
+            bin_range = 1
+        df_effcorr = []
+        # loop over pt_jet bins (efficiency is the same for all pt_jet,
+        # but histos have pt_jet interval in the title)
+        for ibin2 in range(bin_range):
+            heff_pr = eff_file.Get("eff_mult%d" % ibin2)
+            for ipt in range(self.p_nptfinbins):
+                eff = heff_pr.GetBinContent(ipt+1)
+                # limit the prompt(nonprompt) df with current bin ranges and
+                # assign corresponding efficiency to each bin as a new df column
+                df_tmp = seldf_singlevar(df_noeffcorr, "pt_cand", \
+                        self.lpt_finbinmin[ipt], self.lpt_finbinmax[ipt])
+                df_tmp['eff'] = eff
+                if eff > 0.0:
+                    df_tmp['weight'] = 1.0/eff
+                else:
+                    df_tmp['weight'] = 0.0
+                df_effcorr.append(df_tmp)
+        df_effcorr = pd.concat(df_effcorr)
+        return df_effcorr
 
     def process_response(self):
         print("Doing response", self.mcordata, self.period)
@@ -642,10 +739,13 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
 
             df_mc_gen = pickle.load(openfile(self.mptfiles_gensk[iptskim][index], "rb"))
             df_mc_gen = adjust_nsd(df_mc_gen)
+            df_mc_gen = adjust_zg(df_mc_gen)
+            df_mc_gen = adjust_rg(df_mc_gen)
             if self.runlistrigger is not None:
                 df_mc_gen = selectdfrunlist(df_mc_gen, \
                         self.run_param[self.runlistrigger], "run_number")
-            df_mc_gen = df_mc_gen.query(self.s_jetsel_gen)
+            if self.s_jetsel_gen is not None:
+                df_mc_gen = df_mc_gen.query(self.s_jetsel_gen)
             list_df_mc_gen.append(df_mc_gen)
 
             if self.do_custom_analysis_cuts:
@@ -654,6 +754,8 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
             else:
                 df_mc_reco = pickle.load(openfile(self.mptfiles_recoskmldec[iptskim][index], "rb"))
             df_mc_reco = adjust_nsd(df_mc_reco)
+            df_mc_reco = adjust_zg(df_mc_reco)
+            df_mc_reco = adjust_rg(df_mc_reco)
             if self.s_evtsel is not None:
                 df_mc_reco = df_mc_reco.query(self.s_evtsel)
             if self.s_jetsel_reco is not None:
@@ -661,7 +763,9 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
             if self.s_trigger is not None:
                 df_mc_reco = df_mc_reco.query(self.s_trigger)
             if self.doml is True:
-                df_mc_reco = df_mc_reco.query(self.l_selml[iptskim])
+                for ipt in range(self.p_nptfinbins):
+                    #TO BE FIXED
+                    df_mc_reco = df_mc_reco.query(self.l_selml[ipt])
             elif self.do_custom_analysis_cuts: # custom cuts, pt bin
                 list_df_mc_reco_ipt = []
                 for ipt in range(self.p_nptfinbins):
@@ -708,6 +812,15 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
         fill_hist(hzvsjetpt_gen_unmatched, df_zvsjetpt_gen_unmatched)
         hzvsjetpt_gen_unmatched.Write()
 
+        #create an unmatched sample for closure test (NB! not statistically same as reconstructed sample!)
+        #sample_closure_unmatched=df_zvsjetpt_gen_unmatched.sample(frac=0.20)
+        _, sample_closure_unmatched = \
+                 train_test_split(df_zvsjetpt_gen_unmatched, test_size=self.closure_frac)
+        hz_closure_unmatched = makefill2dhist(sample_closure_unmatched, \
+                "sample_closure", self.varshapebinarray_gen, \
+                self.var2binarray_gen ,self.v_varshape_binning, "pt_jet")
+        hz_closure_unmatched.Write()
+
         # 3D histogram for gen non-prompt
         titlehist = "hzvsjetptvscandpt_gen_nonprompt"
         hzvsjetptvscandpt_gen_nonprompt = makefill3dhist(df_gen_nonprompt, titlehist, \
@@ -742,11 +855,15 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
                                      self.lvar2_binmin_gen[ibin2], self.lvar2_binmax_gen[ibin2])
             df_tmp = seldf_singlevar(df_tmp, self.v_varshape_binning_gen, \
                                      self.lvarshape_binmin_gen[0], self.lvarshape_binmax_gen[-1])
+            if self.s_jetsel_gen_matched_reco is not None:
+                df_tmp = df_tmp.query(self.s_jetsel_gen_matched_reco)
             fill_hist(hz_gen_nocuts, df_tmp[self.v_varshape_binning_gen])
             df_tmp = seldf_singlevar(df_tmp, "pt_jet",
                                      self.lvar2_binmin_reco[0], self.lvar2_binmax_reco[-1])
             df_tmp = seldf_singlevar(df_tmp, self.v_varshape_binning,
                                      self.lvarshape_binmin_reco[0], self.lvarshape_binmax_reco[-1])
+            if self.s_jetsel_reco is not None:
+                df_tmp = df_tmp.query(self.s_jetsel_reco)
             fill_hist(hz_gen_cuts, df_tmp[self.v_varshape_binning_gen])
             hz_gen_cuts.Write()
             hz_gen_nocuts.Write()
@@ -762,11 +879,15 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
                                      self.lvar2_binmin_gen[ibin2], self.lvar2_binmax_gen[ibin2])
             df_tmp_pr = seldf_singlevar(df_tmp_pr, self.v_varshape_binning_gen, \
                                      self.lvarshape_binmin_gen[0], self.lvarshape_binmax_gen[-1])
+            if self.s_jetsel_gen_matched_reco is not None:
+                df_tmp_pr = df_tmp_pr.query(self.s_jetsel_gen_matched_reco)
             fill_hist(hz_gen_nocuts_pr, df_tmp_pr[self.v_varshape_binning_gen])
             df_tmp_pr = seldf_singlevar(df_tmp_pr, "pt_jet",
                                         self.lvar2_binmin_reco[0], self.lvar2_binmax_reco[-1])
             df_tmp_pr = seldf_singlevar(df_tmp_pr, self.v_varshape_binning,
                                         self.lvarshape_binmin_reco[0], self.lvarshape_binmax_reco[-1])
+            if self.s_jetsel_reco is not None:
+                df_tmp_pr = df_tmp_pr.query(self.s_jetsel_reco)
             fill_hist(hz_gen_cuts_pr, df_tmp_pr[self.v_varshape_binning_gen])
             hz_gen_cuts_pr.Write()
             hz_gen_nocuts_pr.Write()
@@ -813,10 +934,21 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
         hzvsjetpt_gen_cuts_pr = \
             build2dhisto("hzvsjetpt_gen_cuts", self.varshapebinarray_gen, self.var2binarray_gen)
 
-        fill2dhist(df_tmp_selreco_pr, hzvsjetpt_reco_nocuts_pr, self.v_varshape_binning, "pt_jet")
-        fill2dhist(df_tmp_selgen_pr, hzvsjetpt_gen_nocuts_pr, self.v_varshape_binning_gen, "pt_gen_jet")
-        fill2dhist(df_tmp_selrecogen_pr, hzvsjetpt_reco_cuts_pr, self.v_varshape_binning, "pt_jet")
-        fill2dhist(df_tmp_selrecogen_pr, hzvsjetpt_gen_cuts_pr, self.v_varshape_binning_gen, "pt_gen_jet")
+        # efficiency corrections for prompt kin. eff. (reco&gen) for unfolding
+        if self.doeff_resp:
+            df_tmp_selreco_pr = self.effcorr_response( df_tmp_selreco_pr)
+            df_tmp_selgen_pr = self.effcorr_response( df_tmp_selgen_pr)
+            df_tmp_selrecogen_pr = self.effcorr_response( df_tmp_selrecogen_pr)
+            out_file.cd()
+            fill2dweighed(df_tmp_selreco_pr, hzvsjetpt_reco_nocuts_pr, self.v_varshape_binning, "pt_jet", "weight")
+            fill2dweighed(df_tmp_selgen_pr, hzvsjetpt_gen_nocuts_pr, self.v_varshape_binning_gen, "pt_gen_jet", "weight")
+            fill2dweighed(df_tmp_selrecogen_pr, hzvsjetpt_reco_cuts_pr, self.v_varshape_binning, "pt_jet", "weight")
+            fill2dweighed(df_tmp_selrecogen_pr, hzvsjetpt_gen_cuts_pr, self.v_varshape_binning_gen, "pt_gen_jet", "weight")
+        else:
+            fill2dhist(df_tmp_selreco_pr, hzvsjetpt_reco_nocuts_pr, self.v_varshape_binning, "pt_jet")
+            fill2dhist(df_tmp_selgen_pr, hzvsjetpt_gen_nocuts_pr, self.v_varshape_binning_gen, "pt_gen_jet")
+            fill2dhist(df_tmp_selrecogen_pr, hzvsjetpt_reco_cuts_pr, self.v_varshape_binning, "pt_jet")
+            fill2dhist(df_tmp_selrecogen_pr, hzvsjetpt_gen_cuts_pr, self.v_varshape_binning_gen, "pt_gen_jet")
         hzvsjetpt_reco_nocuts_pr.Write()
         hzvsjetpt_gen_nocuts_pr.Write()
         hzvsjetpt_reco_cuts_pr.Write()
@@ -850,9 +982,12 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
         hjetpt_gen_cuts_pr.Sumw2()
         hjetpt_gen_nocuts_closure.Sumw2()
         hjetpt_gen_cuts_closure.Sumw2()
-
-        fill_hist(hjetpt_gen_nocuts_pr, df_tmp_selgen_pr["pt_gen_jet"])
-        fill_hist(hjetpt_gen_cuts_pr, df_tmp_selrecogen_pr["pt_gen_jet"])
+        if self.doeff_resp:
+            fillweighed(df_tmp_selgen_pr, hjetpt_gen_nocuts_pr,"pt_gen_jet", "weight")
+            fillweighed(df_tmp_selrecogen_pr, hjetpt_gen_cuts_pr,"pt_gen_jet", "weight")
+        else:
+            fill_hist(hjetpt_gen_nocuts_pr, df_tmp_selgen_pr["pt_gen_jet"])
+            fill_hist(hjetpt_gen_cuts_pr, df_tmp_selrecogen_pr["pt_gen_jet"])
         hjetpt_gen_nocuts_pr.Write()
         hjetpt_gen_cuts_pr.Write()
         # end of histograms for unfolding
@@ -889,8 +1024,22 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
         hz_genvsreco_full_real.Scale(1.0 / hz_genvsreco_full_real.Integral())
         hz_genvsreco_full_real.Write()
 
+        if self.doeff_resp:
+            df_tmp_selrecogen = self.effcorr_response(df_tmp_selrecogen)
         for row in df_tmp_selrecogen.itertuples():
-            response_matrix.Fill(getattr(row, self.v_varshape_binning), row.pt_jet, getattr(row, self.v_varshape_binning_gen), row.pt_gen_jet)
+            weight = 1.0
+            if self.doeff_resp is True:
+                weight = row.weight
+            if weight > 0.0:
+                response_matrix_weight = weight
+            else:
+                response_matrix_weight = 1.0
+                print("WARNING! Response matrix is unweighted")
+
+            response_matrix.Fill(getattr(row, self.v_varshape_binning),
+                    row.pt_jet, getattr(row, self.v_varshape_binning_gen),
+                    row.pt_gen_jet, response_matrix_weight)
+        out_file.cd()
         response_matrix.Write("response_matrix_nonprompt")
 
         # histograms for unfolding
@@ -1049,8 +1198,16 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
         _, _, df_tmp_selrecogen_pr_train = \
                 self.create_df_closure(df_mc_reco_merged_prompt_train)
 
-        fill2dhist(df_tmp_selreco_pr_test, hzvsjetpt_reco_closure_pr, self.v_varshape_binning, "pt_jet")
-        fill2dhist(df_tmp_selgen_pr_test, hzvsjetpt_gen_closure_pr, self.v_varshape_binning_gen, "pt_gen_jet")
+        out_file.cd()
+        if self.doeff_resp:
+            df_tmp_selreco_pr_test = self.effcorr_response(df_tmp_selreco_pr_test)
+            df_tmp_selgen_pr_test = self.effcorr_response(df_tmp_selgen_pr_test)
+            out_file.cd()
+            fill2dweighed(df_tmp_selreco_pr_test, hzvsjetpt_reco_closure_pr,self.v_varshape_binning, "pt_jet", "weight")
+            fill2dweighed(df_tmp_selgen_pr_test, hzvsjetpt_gen_closure_pr,self.v_varshape_binning_gen, "pt_gen_jet", "weight")
+        else:
+            fill2dhist(df_tmp_selreco_pr_test, hzvsjetpt_reco_closure_pr, self.v_varshape_binning, "pt_jet")
+            fill2dhist(df_tmp_selgen_pr_test, hzvsjetpt_gen_closure_pr, self.v_varshape_binning_gen, "pt_gen_jet")
         hzvsjetpt_reco_closure_pr.Write("input_closure_reco")
         hzvsjetpt_gen_closure_pr.Write("input_closure_gen")
 
@@ -1070,13 +1227,28 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
                 "pt_gen_jet", self.lvar2_binmin_gen[ibin2], self.lvar2_binmax_gen[ibin2])
             df_tmp_selrecogen_pr_test_bin = seldf_singlevar(df_tmp_selrecogen_pr_test, \
                 "pt_gen_jet", self.lvar2_binmin_gen[ibin2], self.lvar2_binmax_gen[ibin2])
-            fill_hist(hz_gen_nocuts_closure, df_tmp_selgen_pr_test_bin[self.v_varshape_binning_gen])
-            fill_hist(hz_gen_cuts_closure, df_tmp_selrecogen_pr_test_bin[self.v_varshape_binning_gen])
+            if self.doeff_resp:
+                df_tmp_selgen_pr_test_bin = self.effcorr_response(df_tmp_selgen_pr_test_bin)
+                df_tmp_selrecogen_pr_test_bin = self.effcorr_response(df_tmp_selgen_pr_test_bin)
+                out_file.cd()
+                fillweighed(df_tmp_selgen_pr_test_bin, hz_gen_nocuts_closure, self.v_varshape_binning_gen,"weight")
+                fillweighed(df_tmp_selrecogen_pr_test_bin, hz_gen_cuts_closure, self.v_varshape_binning_gen,"weight")
+            else:
+                fill_hist(hz_gen_nocuts_closure, df_tmp_selgen_pr_test_bin[self.v_varshape_binning_gen])
+                fill_hist(hz_gen_cuts_closure, df_tmp_selrecogen_pr_test_bin[self.v_varshape_binning_gen])
             hz_gen_cuts_closure.Write()
             hz_gen_nocuts_closure.Write()
 
-        fill_hist(hjetpt_gen_nocuts_closure, df_tmp_selgen_pr_test["pt_gen_jet"])
-        fill_hist(hjetpt_gen_cuts_closure, df_tmp_selrecogen_pr_test["pt_gen_jet"])
+        if self.doeff_resp:
+
+            df_tmp_selgen_pr_test = self.effcorr_response( df_tmp_selreco_pr_test)
+            df_tmp_selrecogen_pr_test = self.effcorr_response( df_tmp_selrecogen_pr_test)
+            out_file.cd()
+            fillweighed(df_tmp_selgen_pr_test, hjetpt_gen_nocuts_closure,"pt_gen_jet", "weight")
+            fillweighed(df_tmp_selrecogen_pr_test, hjetpt_gen_cuts_closure,"pt_gen_jet", "weight")
+        else:
+            fill_hist(hjetpt_gen_nocuts_closure, df_tmp_selgen_pr_test["pt_gen_jet"])
+            fill_hist(hjetpt_gen_cuts_closure, df_tmp_selrecogen_pr_test["pt_gen_jet"])
         hjetpt_gen_nocuts_closure.Write()
         hjetpt_gen_cuts_closure.Write()
 
@@ -1091,34 +1263,117 @@ class ProcesserDhadrons_jet(Processer): # pylint: disable=invalid-name, too-many
                                            self.p_nbin2_reco, self.var2binarray_reco)
         hzvsjetpt_reco_cuts_closure.Sumw2()
 
-        fill2dhist(df_tmp_selreco_pr_test, hzvsjetpt_reco_nocuts_closure, self.v_varshape_binning, "pt_jet")
-        fill2dhist(df_tmp_selrecogen_pr_test, hzvsjetpt_reco_cuts_closure, self.v_varshape_binning, "pt_jet")
+        if self.doeff_resp:
+            df_tmp_selreco_pr_test = self.effcorr_response(df_tmp_selreco_pr_test)
+            df_tmp_selrecogen_pr_test = self.effcorr_response(df_tmp_selrecogen_pr_test)
+            out_file.cd()
+            fill2dweighed(df_tmp_selreco_pr_test, hzvsjetpt_reco_nocuts_closure, \
+                    self.v_varshape_binning, "pt_jet","weight")
+            fill2dweighed(df_tmp_selrecogen_pr_test, hzvsjetpt_reco_cuts_closure, \
+                    self.v_varshape_binning, "pt_jet", "weight")
+        else:
+            fill2dhist(df_tmp_selreco_pr_test, hzvsjetpt_reco_nocuts_closure, \
+                    self.v_varshape_binning, "pt_jet")
+            fill2dhist(df_tmp_selrecogen_pr_test, hzvsjetpt_reco_cuts_closure, \
+                    self.v_varshape_binning, "pt_jet")
         hzvsjetpt_reco_nocuts_closure.Write()
         hzvsjetpt_reco_cuts_closure.Write()
 
+        # Get histogram with weights for the model-dependent scaling of the response.
+        hzvsjetpt_modeldep_weights = None
+        shape_weight_name = "ntracks_gen_jet" # variable used for weight estimation
+        if self.domodeldep is True and self.path_modeldep:
+            print("Applying model weights to the response")
+            file_modeldep = TFile.Open(self.path_modeldep)
+            if not file_modeldep:
+                print(make_message_notfound(self.path_modeldep))
+                sys.exit()
+            # if self.typean == "jet_zg":
+            #     analysis = "Zg"
+            # elif self.typean == "jet_rg":
+            #     analysis = "Rg"
+            # elif self.typean == "jet_nsd":
+            #     analysis = "Nsd"
+            # else:
+            #     print(f"Unknown analysis type: {self.typean}")
+            #     sys.exit()
+            # name_hist_model_weights = f"fh2_D0_Monash_{analysis}_JetpT_Weights"
+            name_hist_model_weights = f"fh2_D0_Monash_N_JetpT_Weights"
+            hzvsjetpt_modeldep_weights = file_modeldep.Get(name_hist_model_weights)
+            if not hzvsjetpt_modeldep_weights:
+                print(make_message_notfound(name_hist_model_weights, self.path_modeldep))
+                sys.exit()
+
+        # Fill the response matrix. Apply weights if needed.
+        hz_genvsreco_full_pr_real_weighted = \
+            buildhisto("hz_genvsreco_full_pr_real_weighted", f"{'' if self.domodeldep else 'not '}weighted RM;gen;rec", \
+            self.varshapebinarray_gen, self.varshapebinarray_reco)
+        # print(f"RM 2D will be filled for {self.lvar2_binmin_gen[1]} <= pT jet < {self.lvar2_binmax_gen[1]}")
+        # print(f"Response df columns:")
+        # for i, col in enumerate(df_tmp_selrecogen_pr.columns):
+        #     print(f"{i}: {col}")
+        if self.doeff_resp:
+            df_tmp_selrecogen_pr = self.effcorr_response(df_tmp_selrecogen_pr)
         for row in df_tmp_selrecogen_pr.itertuples():
             response_matrix_weight = 1.0
+            rm_weight = 1.0
+            var_shape = getattr(row, self.v_varshape_binning_gen)
+            var_ptjet = row.pt_gen_jet
             if self.doprior is True:
-                binx = hzvsjetpt_prior_weights.GetXaxis().FindBin(getattr(row, self.v_varshape_binning_gen))
-                biny = hzvsjetpt_prior_weights.GetYaxis().FindBin(row.pt_gen_jet)
-                weight = hzvsjetpt_prior_weights.GetBinContent(binx, biny)
-
-                if weight > 0.0:
-                    response_matrix_weight = 1.0/weight
+                binx = hzvsjetpt_prior_weights.GetXaxis().FindBin(var_shape)
+                biny = hzvsjetpt_prior_weights.GetYaxis().FindBin(var_ptjet)
+                rm_weight *= hzvsjetpt_prior_weights.GetBinContent(binx, biny)
+            if self.domodeldep is True:
+                var_shape_weight = getattr(row, shape_weight_name)
+                binx = hzvsjetpt_modeldep_weights.GetXaxis().FindBin(var_shape_weight)
+                biny = hzvsjetpt_modeldep_weights.GetYaxis().FindBin(var_ptjet)
+                weight_model = hzvsjetpt_modeldep_weights.GetBinContent(binx, biny)
+                if weight_model <= 0.:
+                    print(f"WARNING: Wrong value of model weight = {weight_model} for {shape_weight_name} = {var_shape_weight}, jet pT = {var_ptjet}, in bins {binx}, {biny}. Ignoring the weight!")
+                else:
+                    rm_weight /= weight_model
+            if self.doeff_resp:
+                rm_weight *= row.eff
+            if rm_weight > 0.0:
+                response_matrix_weight = 1.0 / rm_weight
+            else:
+                print("WARNING! Response matrix is unweighted")
             response_matrix_pr.Fill(getattr(row, self.v_varshape_binning), row.pt_jet,\
-                getattr(row, self.v_varshape_binning_gen), row.pt_gen_jet, response_matrix_weight)
+                var_shape, var_ptjet, response_matrix_weight)
+            # Fill weighted 2D response for shape in the central jet pT bin
+            if self.lvar2_binmin_gen[1] <= var_ptjet < self.lvar2_binmax_gen[1]:
+                hz_genvsreco_full_pr_real_weighted.Fill(var_shape, getattr(row, self.v_varshape_binning), response_matrix_weight)
+        # Closure response matrix
+        if self.doeff_resp:
+            df_tmp_selrecogen_pr_train = self.effcorr_response(df_tmp_selrecogen_pr_train)
         for row in df_tmp_selrecogen_pr_train.itertuples():
             response_matrix_weight = 1.0
+            rm_weight = 1.0
+            var_shape = getattr(row, self.v_varshape_binning_gen)
+            var_ptjet = row.pt_gen_jet
             if self.doprior is True:
-                binx = hzvsjetpt_prior_weights.GetXaxis().FindBin(getattr(row, self.v_varshape_binning_gen))
-                biny = hzvsjetpt_prior_weights.GetYaxis().FindBin(row.pt_gen_jet)
-                weight = hzvsjetpt_prior_weights.GetBinContent(binx, biny)
-
-                if weight > 0.0:
-                    response_matrix_weight = 1.0/weight
+                binx = hzvsjetpt_prior_weights.GetXaxis().FindBin(var_shape)
+                biny = hzvsjetpt_prior_weights.GetYaxis().FindBin(var_ptjet)
+                rm_weight *= hzvsjetpt_prior_weights.GetBinContent(binx, biny)
+            if self.domodeldep is True:
+                var_shape_weight = getattr(row, shape_weight_name)
+                binx = hzvsjetpt_modeldep_weights.GetXaxis().FindBin(var_shape_weight)
+                biny = hzvsjetpt_modeldep_weights.GetYaxis().FindBin(var_ptjet)
+                weight_model = hzvsjetpt_modeldep_weights.GetBinContent(binx, biny)
+                if weight_model <= 0.:
+                    print(f"WARNING: Wrong value of model weight = {weight_model} for {shape_weight_name} = {var_shape_weight}, jet pT = {var_ptjet}, in bins {binx}, {biny}. Ignoring the weight!")
+                else:
+                    rm_weight /= weight_model
+            if self.doeff_resp:
+                rm_weight *= row.eff
+            if rm_weight > 0.0:
+                response_matrix_weight = 1.0 / rm_weight
+            else:
+                print("WARNING! Response matrix is unweighted")
             response_matrix_closure_pr.Fill(getattr(row, self.v_varshape_binning), row.pt_jet,\
-                getattr(row, self.v_varshape_binning_gen), row.pt_gen_jet, response_matrix_weight)
+                var_shape, var_ptjet, response_matrix_weight)
+        out_file.cd()
         response_matrix_pr.Write("response_matrix")
         response_matrix_closure_pr.Write("response_matrix_closure")
-
+        hz_genvsreco_full_pr_real_weighted.Write()
         out_file.Close()

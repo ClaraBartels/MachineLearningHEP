@@ -23,19 +23,20 @@ import bz2
 import gzip
 import lzma
 import os
+import sys
 import shutil
 import math
 from array import array
 import numpy as np
 import pandas as pd
 import lz4
-from machine_learning_hep.selectionutils import select_runs
-from ROOT import TObject, TCanvas, TLegend, TH1, TLatex, TGraph, TGraphAsymmErrors # pylint: disable=import-error, no-name-in-module
+from ROOT import TObject, TCanvas, TLegend, TH1, TH1F, TLatex, TGraph, TGraphAsymmErrors, TRandom3 # pylint: disable=import-error, no-name-in-module
 from ROOT import kBlack, kRed, kGreen, kBlue, kYellow, kOrange, kMagenta, kCyan, kGray # pylint: disable=import-error, no-name-in-module
 from ROOT import kOpenCircle, kOpenSquare, kOpenDiamond, kOpenCross, kOpenStar, kOpenThreeTriangles # pylint: disable=import-error, no-name-in-module
 from ROOT import kOpenFourTrianglesX, kOpenDoubleDiamond, kOpenFourTrianglesPlus, kOpenCrossX # pylint: disable=import-error, no-name-in-module
 from ROOT import kFullCircle, kFullSquare, kFullDiamond, kFullCross, kFullStar, kFullThreeTriangles # pylint: disable=import-error, no-name-in-module
 from ROOT import kFullFourTrianglesX, kFullDoubleDiamond, kFullFourTrianglesPlus, kFullCrossX # pylint: disable=import-error, no-name-in-module
+from machine_learning_hep.selectionutils import select_runs
 
 def openfile(filename, attr):
     """
@@ -409,8 +410,8 @@ def z_calc(pt_1, phi_1, eta_1, pt_2, phi_2, eta_2):
     np_eta_2 = eta_2.values
 
     cos_phi_1 = np.cos(np_phi_1)
-    cos_phi_2 =	np.cos(np_phi_2)
-    sin_phi_1 =	np.sin(np_phi_1)
+    cos_phi_2 = np.cos(np_phi_2)
+    sin_phi_1 = np.sin(np_phi_1)
     sin_phi_2 = np.sin(np_phi_2)
     sinh_eta_1 = np.sinh(np_eta_1)
     sinh_eta_2 = np.sinh(np_eta_2)
@@ -635,17 +636,17 @@ def setup_histogram(hist, colour=1, markerstyle=kOpenCircle, size=1.5):
     hist.SetMarkerColor(colour)
 
 def setup_canvas(can):
-    can.SetCanvasSize(1900, 1500)
-    can.SetWindowSize(500, 500)
+    can.SetCanvasSize(1970, 1500)
+    can.SetWindowSize(570, 500)
     can.SetFillColor(0)
     can.SetTicks(1, 1)
     can.SetBottomMargin(0.12)
     can.SetLeftMargin(0.12)
     can.SetTopMargin(0.1)
-    can.SetRightMargin(0.02)
-    can.cd()
+    can.SetRightMargin(0.05)
+    #can.cd()
 
-def setup_legend(legend, textsize=0.03):
+def setup_legend(legend, textsize=0.035):
     legend.SetBorderSize(0)
     legend.SetFillColor(0)
     legend.SetFillStyle(0)
@@ -673,9 +674,10 @@ def draw_latex(latex, colour=1, textsize=0.03):
     latex.SetTextFont(42)
     latex.Draw()
 
-def make_plot(name, path=None, suffix="eps", title="", size=None, margins_c=None, # pylint: disable=too-many-arguments, too-many-branches, too-many-statements, too-many-locals
+def make_plot(name, can=None, pad=0, path=None, suffix="eps", title="", size=None, margins_c=None, # pylint: disable=too-many-arguments, too-many-branches, too-many-statements, too-many-locals
               list_obj=None, labels_obj=None,
-              leg_pos=None, opt_leg_h="P", opt_leg_g="P", opt_plot_h="", opt_plot_g="P0",
+              leg_pos=None, opt_leg_h="P", opt_leg_g="P",
+              opt_plot_h="", opt_plot_g="P0",
               offsets_xy=None, maxdigits=3, colours=None, markers=None, sizes=None,
               range_x=None, range_y=None, margins_y=None, with_errors="xy", logscale=None):
     """
@@ -746,12 +748,17 @@ def make_plot(name, path=None, suffix="eps", title="", size=None, margins_c=None
         graph.GetYaxis().SetRangeUser(y_min_plot, y_max_plot)
         graph.GetXaxis().SetMaxDigits(maxdigits)
         graph.GetYaxis().SetMaxDigits(maxdigits)
+        graph.GetYaxis().SetTitleOffset(1.2)
         if offsets_xy:
             graph.GetXaxis().SetTitleOffset(offsets_xy[0])
             graph.GetYaxis().SetTitleOffset(offsets_xy[1])
         if leg and n_labels > counter_plot and len(labels_obj[counter_plot]) > 0:
             leg.AddEntry(graph, labels_obj[counter_plot], opt_leg_g)
-        graph.Draw(opt_plot_g + "A" if counter_plot == 0 else opt_plot_g)
+        if isinstance(opt_plot_g, list):
+            opt_plot = opt_plot_g
+        else:
+            opt_plot = [opt_plot_g] * (counter_plot + 1)
+        graph.Draw(opt_plot[counter_plot] + "A" if counter_plot == 0 else opt_plot[counter_plot])
 
     def plot_histogram(histogram):
         # If nothing has been plotted yet, plot an empty graph to set the exact ranges.
@@ -763,7 +770,10 @@ def make_plot(name, path=None, suffix="eps", title="", size=None, margins_c=None
             gr.GetXaxis().SetLimits(x_min_plot, x_max_plot)
             gr.GetYaxis().SetRangeUser(y_min_plot, y_max_plot)
             gr.GetXaxis().SetMaxDigits(maxdigits)
+            gr.GetXaxis().SetLabelSize(0.045)
+            gr.GetYaxis().SetLabelSize(0.045)
             gr.GetYaxis().SetMaxDigits(maxdigits)
+            gr.GetYaxis().SetTitleOffset(1.2)
             if offsets_xy:
                 gr.GetXaxis().SetTitleOffset(offsets_xy[0])
                 gr.GetYaxis().SetTitleOffset(offsets_xy[1])
@@ -771,9 +781,18 @@ def make_plot(name, path=None, suffix="eps", title="", size=None, margins_c=None
             list_new.append(gr)
         setup_histogram(histogram, get_my_colour(counter_plot), get_my_marker(counter_plot),
                         get_my_size(counter_plot))
+        if isinstance(opt_plot_h, list):
+            opt_plot = opt_plot_h
+        else:
+            opt_plot = [opt_plot_h]*(counter_plot+1)
+        if isinstance(opt_leg_h, list):
+            opt_leg = opt_leg_h
+        else:
+            opt_leg = [opt_leg_h]*(counter_plot+1)
         if leg and n_labels > counter_plot and len(labels_obj[counter_plot]) > 0:
-            leg.AddEntry(histogram, labels_obj[counter_plot], opt_leg_h)
-        histogram.Draw(opt_plot_h)
+            leg.AddEntry(histogram, labels_obj[counter_plot], opt_leg[counter_plot])
+        print(f"Plotting {histogram.GetName()} with option {opt_plot[counter_plot]}")
+        histogram.Draw(opt_plot[counter_plot])
 
     def plot_latex(latex):
         draw_latex(latex)
@@ -803,7 +822,12 @@ def make_plot(name, path=None, suffix="eps", title="", size=None, margins_c=None
         margins_y = [0.05, 0.05]
 
     # create and set canvas
-    can = TCanvas(name, name)
+    if can and pad > 0:
+        can.cd(pad)
+        print(f"Entering pad {pad} in canvas {can.GetName()}")
+    else:
+        can = TCanvas(name, name)
+        print(f"Creating new canvas with name {name}")
     setup_canvas(can)
     if isinstance(size, list) and len(size) == 2:
         can.SetCanvasSize(*size)
@@ -876,10 +900,17 @@ def make_plot(name, path=None, suffix="eps", title="", size=None, margins_c=None
         y_min_plot, y_max_plot = range_y
 
     # append "same" to the histogram plotting option if needed
-    opt_plot_h = opt_plot_h.lower()
-    opt_not_in = all(opt not in opt_plot_h for opt in ("same", "lego", "surf"))
-    if opt_not_in:
-        opt_plot_h += " same"
+    if isinstance(opt_plot_h, list):
+        for opt in opt_plot_h:
+            opt = opt.lower()
+            opt_not_in = all(opt not in opt_plot_h for opt in ("same", "lego", "surf"))
+            if opt_not_in:
+                opt += " same"
+    else:
+        opt_plot_h = opt_plot_h.lower()
+        opt_not_in = all(opt not in opt_plot_h for opt in ("same", "lego", "surf"))
+        if opt_not_in:
+            opt_plot_h += " same"
 
     # plot objects
     counter_plot = 0 # counter of plotted histograms and graphs
@@ -944,3 +975,174 @@ def tg_sys(central, variations):
                            shapebins_widths_up_array, shapebins_error_down_array,
                            shapebins_error_up_array)
     return tg
+
+def divide_graphs(gr_num, gr_den):
+    """Divide TGraphAsymmErrors"""
+    n_points = gr_num.GetN()
+    if gr_den.GetN() != n_points:
+        print("Error: numbers of points differ")
+        return None
+    gr_rat = gr_num.Clone(f"{gr_num.GetName()}_ratio")
+    for i in range(n_points):
+        y_a = gr_num.GetPointY(i)
+        e_a_plus = gr_num.GetErrorYhigh(i)
+        e_a_minus = gr_num.GetErrorYlow(i)
+        y_b = gr_den.GetPointY(i)
+        e_b_plus = gr_den.GetErrorYhigh(i)
+        e_b_minus = gr_den.GetErrorYlow(i)
+        r = y_a / y_b
+        gr_rat.SetPointY(i, r)
+        gr_rat.SetPointEYhigh(i, math.sqrt(e_a_plus * e_a_plus + r * r * e_b_minus * e_b_minus) / y_b)
+        gr_rat.SetPointEYlow(i, math.sqrt(e_a_minus * e_a_minus + r * r * e_b_plus * e_b_plus) / y_b)
+    return gr_rat
+
+
+def scale_graph(gr, number):
+    """
+    Scale TGraphAsymmErrors
+    """
+    if not gr:
+        return
+    for i in range(gr.GetN()):
+        gr.SetPointY(i, gr.GetPointY(i) * number)
+        gr.SetPointEYhigh(i, gr.GetErrorYlow(i) * number)
+        gr.SetPointEYlow(i, gr.GetErrorYhigh(i) * number)
+
+
+def sqrt_sum_sq(numbers):
+    """Return sqrt(n1 * n1 + n2 * n2 + ...)"""
+    from math import sqrt
+    return sqrt(sum(n * n for n in numbers))
+
+
+def combine_graphs(graphs: list):
+    """Combine uncertainties of TGraphAsymmErrors graphs in quadrature"""
+    if not graphs:
+        print("Error: No graphs given")
+        sys.exit(1)
+    gr_comb = graphs[0].Clone(f"{graphs[0].GetName()}_combined")
+    if len(graphs) > 1:
+        n_points = gr_comb.GetN()
+        for gr in graphs:
+            if gr.GetN() != n_points:
+                print(f"Error: Different number of points: {gr.GetN()} vs {n_points}")
+                sys.exit(1)
+        for i in range(n_points):
+            x_comb = gr_comb.GetPointX(i)
+            y_comb = gr_comb.GetPointY(i)
+            for gr in graphs:
+                if gr.GetPointX(i) != x_comb:
+                    print(f"Error: Different x-value of point {i}: {x_comb} vs {gr.GetPointX(i)}")
+                    sys.exit(1)
+                if gr.GetPointY(i) != y_comb:
+                    print(f"Error: Different y-value of point {i}: {y_comb} vs {gr.GetPointY(i)}")
+                    sys.exit(1)
+            gr_comb.SetPointEYhigh(i, sqrt_sum_sq([gr.GetErrorYhigh(i) for gr in graphs]))
+            gr_comb.SetPointEYlow(i, sqrt_sum_sq([gr.GetErrorYlow(i) for gr in graphs]))
+    return gr_comb
+
+
+def get_mean_hist(hist):
+    """Get the mean x of a histogram."""
+    sum_xy = 0
+    sum_y = 0
+    for i in range(hist.GetNbinsX()):
+        sum_xy += hist.GetBinContent(i + 1) * hist.GetBinCenter(i + 1)
+        sum_y += hist.GetBinContent(i + 1)
+    return sum_xy / sum_y
+
+
+def get_mean_graph(gr):
+    """Get the mean x of a graph."""
+    sum_xy = 0
+    sum_y = 0
+    for i in range(gr.GetN()):
+        sum_xy += gr.GetPointY(i) * gr.GetPointX(i)
+        sum_y += gr.GetPointY(i)
+    return sum_xy / sum_y
+
+
+def get_mean_uncertainty(his_stat, gr_syst=None, n_var=1000, combine=False):
+    """Get the uncertainty of a distribution's mean by varying y-values within their uncertainties.
+    his_stat is the histogram with stat. unc.
+    gr_syst is the graphs with syst. unc.
+    n_var is the number of variations
+    combine is the switch for combining stat and syst uncertainties in quadrature
+    Returns histograms with the distributions of means.
+    """
+    # combine stat. and syst. uncertainties in quadrature
+    gr_stat = TGraphAsymmErrors(his_stat)
+    gr_comb = None
+    if gr_syst and combine:
+        gr_comb = combine_graphs([gr_stat, gr_syst])
+    n_points = gr_stat.GetN()
+    # create a new empty histogram/graph for the variations
+    hist_var_stat = his_stat.Clone(f"{his_stat.GetName()}_var_stat")
+    hist_var_stat.Reset()
+    hist_var_syst = his_stat.Clone(f"{his_stat.GetName()}_var_syst")
+    hist_var_syst.Reset()
+    hist_var_comb = his_stat.Clone(f"{his_stat.GetName()}_var_comb")
+    hist_var_comb.Reset()
+    rnd = TRandom3()
+    # create a histograms for the distribution of means
+    hist_means_stat = TH1F(f"{his_stat.GetName()}_means_stat", "hist_means_stat", 1000, his_stat.GetXaxis().GetXmin(), his_stat.GetXaxis().GetXmax())
+    hist_means_stat.Sumw2()
+    hist_means_syst = TH1F(f"{his_stat.GetName()}_means_syst", "hist_means_syst", 1000, his_stat.GetXaxis().GetXmin(), his_stat.GetXaxis().GetXmax())
+    hist_means_syst.Sumw2()
+    hist_means_comb = TH1F(f"{his_stat.GetName()}_means_comb", "hist_means_comb", 1000, his_stat.GetXaxis().GetXmin(), his_stat.GetXaxis().GetXmax())
+    hist_means_comb.Sumw2()
+    for _ in range(n_var):
+        for i in range(n_points):
+            # vary y with Gaussian of mean = y_central, sigma = err_y_central
+            y_var_stat = rnd.Gaus(gr_stat.GetPointY(i), (gr_stat.GetErrorYhigh(i) + gr_stat.GetErrorYlow(i)) / 2.)
+            hist_var_stat.SetBinContent(i + 1, y_var_stat)
+            if gr_syst:
+                y_var_syst = rnd.Gaus(gr_syst.GetPointY(i), (gr_syst.GetErrorYhigh(i) + gr_syst.GetErrorYlow(i)) / 2.)
+                hist_var_syst.SetBinContent(i + 1, y_var_syst)
+                if gr_comb:
+                    y_var_comb = rnd.Gaus(gr_comb.GetPointY(i), (gr_comb.GetErrorYhigh(i) + gr_comb.GetErrorYlow(i)) / 2.)
+                    hist_var_comb.SetBinContent(i + 1, y_var_comb)
+        # calculate mean of the new histogram
+        # fill the mean in a histogram of means
+        hist_means_stat.Fill(get_mean_hist(hist_var_stat))
+        if gr_syst:
+            hist_means_syst.Fill(get_mean_hist(hist_var_syst))
+            if gr_comb:
+                hist_means_comb.Fill(get_mean_hist(hist_var_comb))
+    return hist_means_stat, hist_means_syst, hist_means_comb
+
+
+def format_number_prec(num, prec):
+    """Format a number with a given decimal precision."""
+    return f"{round(num, prec):.{max(0, prec)}f}"
+
+
+def format_value_with_unc(y, e_stat=None, e_syst_plus=None, e_syst_minus=None, n_sig=2):
+    """Format a value with uncertainties so that the main value is reported with a decimal precision
+    given by the number of significant figures of the smallest uncertainty."""
+    from math import floor, log10
+    mag_y = floor(log10(y))
+    mag_e_stat = mag_y
+    mag_e_syst = mag_y
+    if e_stat:
+        mag_e_stat = floor(log10(e_stat))
+    if e_syst_plus:
+        if not e_syst_minus:
+            e_syst_minus = e_syst_plus
+        mag_e_syst = floor(log10(min(e_syst_plus, e_syst_minus)))
+    mag_y = min(mag_y, mag_e_stat, mag_e_syst)
+    # print(f"Mag stat {mag_e_stat}, sys {mag_e_syst}")
+    prec_y = n_sig - 1 - mag_y
+    prec_stat = n_sig - 1 - mag_e_stat
+    prec_syst = n_sig - 1 - mag_e_syst
+    str_value = format_number_prec(y, prec_y)
+    if e_stat:
+        str_value += f" ± {format_number_prec(e_stat, prec_stat)} (stat.)"
+    if e_syst_plus:
+        str_e_syst_plus = format_number_prec(e_syst_plus, prec_syst)
+        str_e_syst_minus = format_number_prec(e_syst_minus, prec_syst)
+        if str_e_syst_plus == str_e_syst_minus:
+            str_value += f" ± {str_e_syst_plus} (syst.)"
+        else:
+            str_value += f" +{str_e_syst_plus} −{str_e_syst_minus} (syst.)"
+    return str_value
