@@ -1,0 +1,74 @@
+#
+#overwrite for 24 to 36 GeV to increase background fraction
+#
+
+sel_reco_skim: ["pt_prong0>0.40 and pt_prong1>0.40 and pt_prong2>0.40"]
+
+sel_skim_binmin: [24] #list of nbins
+sel_skim_binmax: [36] #list of nbins
+
+multi:
+    data:
+      fracmerge : [1,1] #list of periods
+      pkl: [/data/TTree/LcPbPbpKpi/vAN-20211108_ROOT6-1/PbPb_data/646_20211123-1105/child_2/pkl_2436,
+                          /data/TTree/LcPbPbpKpi/vAN-20211108_ROOT6-1/PbPb_data/646_20211123-1105/child_1/pkl_2436] #list of periods
+      pkl_skimmed: [/data/TTree/LcPbPbpKpi/vAN-20211108_ROOT6-1/PbPb_data/646_20211123-1105/child_2/pkl_skimmed_2436,
+                          /data/TTree/LcPbPbpKpi/vAN-20211108_ROOT6-1/PbPb_data/646_20211123-1105/child_1/pkl_skimmed_2436] #list of periods
+      pkl_skimmed_merge_for_ml: [/data/TTree/LcPbPbpKpi/vAN-20211108_ROOT6-1/PbPb_data/646_20211123-1105/child_2/pkl_ML_2436,
+                                 /data/TTree/LcPbPbpKpi/vAN-20211108_ROOT6-1/PbPb_data/646_20211123-1105/child_1/pkl_ML_2436] #list of periods
+      pkl_skimmed_merge_for_ml_all:  /mnt/temp/TTreeLctopKpiPbPb/pkl_ML_data_all_010_pass3_2436
+      pkl_evtcounter_all: /mnt/temp/TTreeLctopKpiPbPb/pkl_evt_data_all_010_pass3_2436
+
+    mc:
+      pkl: [/data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_sim/648_20211123-1106/child_2/pkl_signal_2436,
+            /data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_sim/648_20211123-1106/child_1/pkl_signal_2436] #list of periods
+      pkl_skimmed: [/data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_sim/648_20211123-1106/child_2//pkl_skimmed_signal_2436,
+                    /data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_sim/648_20211123-1106/child_1/pkl_skimmed_signal_2436] #list of periods
+      pkl_skimmed_merge_for_ml: [/data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_sim/648_20211123-1106/child_2//pkl_ML_signal_2436,
+                                 /data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_sim/648_20211123-1106/child_1/pkl_ML_signal_2436] #list of periods
+      pkl_skimmed_merge_for_ml_all: /mnt/temp/TTreeLctopKpiPbPb/pkl_ML_mc_all_010_pass3_2436
+      pkl_evtcounter_all: /mnt/temp/TTreeLctopKpiPbPb/pkl_evt_mc_all_010_pass3_2436
+
+
+ml:
+  binmin: [24] #list of nbins sel_skim_binmin bins
+  binmax: [36] #list of nbins sel_skim_binmin bins
+  mlplot: /mnt/temp/OngoingAnalyses_LctopKpiPbPb/010_pass3_bayes/mlplot010_2436 # to be removed
+  mlout: /mnt/temp/OngoingAnalyses_LctopKpiPbPb/010_pass3_bayes/mlout010_2436 # to be removed
+
+
+
+mlapplication:
+  data:
+      pkl_skimmed_dec: [/data/TTree/LcPbPbpKpi/vAN-20211108_ROOT6-1/PbPb_data/646_20211123-1105/child_2/pklsdec_2436,
+                          /data/TTree/LcPbPbpKpi/vAN-20211108_ROOT6-1/PbPb_data/646_20211123-1105/child_1/pklskdec_2436] #list of periods
+      pkl_skimmed_decmerged: [/data/TTree/LcPbPbpKpi/vAN-20211108_ROOT6-1/PbPb_data/646_20211123-1105/child_2/pklskdecmerged_2436,
+                          /data/TTree/LcPbPbpKpi/vAN-20211108_ROOT6-1/PbPb_data/646_20211123-1105/child_1/pklskdecmerged_2436] #list of periods
+  mc:
+
+      pkl_skimmed_dec: [/data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_sim/648_20211123-1106/child_2/pklskdec_2436,
+                        /data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_sim/648_20211123-1106/child_1/pklskdec_2436] #list of periods
+      pkl_skimmed_decmerged: [/data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_sim/648_20211123-1106/child_2//pklskdecmerged_2436,
+                              /data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_sim/648_20211123-1106/child_1/pklskdecmerged_2436] #list of periods
+
+  modelsperptbin: [xgboost_classifierLcpKpi_dfselection_pt_cand_24.0_36.0.sav]
+
+  probcutpresel:
+    data: [0.1] #list of nbins  sel_skim_binmin bins
+    mc: [0.1] #list of nbins  sel_skim_binmin bins
+  probcutoptimal: [0.0] #list of nbins  sel_skim_binmin bins
+
+analysis:
+  MBvspt:
+    sel_an_binmin: [24] #list of pt nbins
+    sel_an_binmax: [36] #list of pt nbins
+    data:
+      runselection: [null, null]
+      results: ['/mnt/temp/OngoingAnalyses_LctopKpiPbPb/010_pass3_bayes/2436/LHC18r','/mnt/temp/OngoingAnalyses_LctopKpiPbPb/010_pass3_bayes/2436/LHC18q'] #list of periods
+      resultsallp: '/mnt/temp/OngoingAnalyses_LctopKpiPbPb/010_pass3_bayes/2436/LHC18qr'
+    mc:
+      runselection: [null, null]
+      results: ['/mnt/temp/OngoingAnalyses_LctopKpiPbPb/010_pass3_bayes/2436/LHC19c3a_all_r', '/mnt/temp/OngoingAnalyses_LctopKpiPbPb/010_pass3_bayes/2436/LHC19c3a_all_q'] #list of periods
+      resultsallp: '/mnt/temp/OngoingAnalyses_LctopKpiPbPb/010_pass3_bayes/3636/LHC10c3a_qr'
+
+

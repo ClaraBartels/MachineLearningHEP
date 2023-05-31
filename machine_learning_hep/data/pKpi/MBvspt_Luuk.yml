@@ -1,0 +1,38 @@
+    MBvspt:
+      proc_type: Dhadrons
+      useperiod: [1]
+      plotbin: [1]
+      #triggerbit: INT7
+      sel_an_binmin: [1,2,4,6,8,12] #list of pt nbins
+      sel_an_binmax: [2,4,6,8,12,24] #list of pt nbins
+      binning_matching: [0,1,2,3,4,5] #list of pt nbins
+
+      #presel_gen_eff: abs(y_cand) < 0.5 and abs(z_vtx_gen) < 10 and centrality > 30 and centrality <= 50
+      evtsel: is_ev_rej==0 and centrality > 30 and centrality <= 50
+      presel_gen_eff: abs(y_cand) < 0.5 and abs(z_vtx_gen) < 10
+      evtsel_eff: is_ev_rej==0 and abs(z_vtx_gen) < 10
+
+      triggersel:
+        data: null
+        mc: null
+
+      use_cuts: True
+      cuts:
+        - Null
+        - Null
+        - Null
+        - "pt_prong0 > 1.3"
+        - "pt_prong0 > 2.3"
+        - Null
+
+      apply_pt_weights: true
+      apply_2d_weights: true
+      event_weighting_mc:
+        PbPb_sim_D2H_pass3:
+          #Files from paper proposal analysis. New splines + retrieved statistics should have no effect. So not updated.
+          - filepath: [/home/lvermunt/MachineLearningHEP_Lc/MachineLearningHEP/Analyses/ALICE_LcPbPb/weights/weights_measured_LHC20g2b.root, #D0_LcD0TAMUmax_LHC20g2b.root,
+                       /home/lvermunt/MachineLearningHEP_Lc/MachineLearningHEP/machine_learning_hep/derive_weights/Lc_PbPb3050/weights_n_tracklets_Lc_PbPb3050_data.root]
+            histo_name: [ptweights,
+                         n_tracklets_0_LHC18qr_weights]
+            according_to: [pt_cand,
+                           n_tracklets]

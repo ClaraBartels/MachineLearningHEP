@@ -1,0 +1,12 @@
+
+
+
+[1m----RUNNING THE DOWNLOADER----[0m
+
+[1mYou set the following setters in the script. Please check them carefully before continuing.[0m
+   Number of files to download from grid: [1m-1[0m
+   Outputfile to be downloaded from grid: [1mAnalysisResults.root[0m
+   I will download [1mnon-merged files[0m from GRID
+   Did you authenticate to [1mJAliEn[0m before running this script?
+
+[1m   Are you okay with these settings [y/n]: [0m

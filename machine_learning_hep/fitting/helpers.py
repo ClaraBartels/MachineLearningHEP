@@ -18,6 +18,7 @@ import os
 import math
 from glob import glob
 from array import array
+import pickle
 
 #pylint: disable=too-many-lines, too-few-public-methods
 from ROOT import TFile, TH1F, TF1, TCanvas, gStyle, Double #pylint: disable=import-error, no-name-in-module
@@ -333,6 +334,12 @@ class MLFitParsFactory: # pylint: disable=too-many-instance-attributes, too-many
                 file_data.ls()
                 raise ValueError("Did not find", histo_name + suffix)
             histo_data.SetDirectory(0)
+            print('histo entries are \n')
+            print(histo_data.GetEntries())
+            canvas = TCanvas("test", "test", 700, 700)
+            histo_data.Draw()
+            canvas.SaveAs("/home/cbartels/Scripts/test3050.eps")
+
             file_data.Close()
 
         if not (get_mc or get_reflections):
@@ -517,6 +524,9 @@ class MLFitter: # pylint: disable=too-many-instance-attributes
                     histo=pars["histograms"]["data"], \
                     histo_mc=pars["histograms"]["mc"], \
                     histo_reflections=pars["histograms"]["reflections"])
+            attrs = self.pre_fits_data[ibin1].get_fit_pars()
+            print("%s \n", attrs)
+
         self.pars_factory.apply_weights = apply_weights_temp
         self.is_initialized_fits = True
 
@@ -542,7 +552,9 @@ class MLFitter: # pylint: disable=too-many-instance-attributes
             fit.override_init_pars(fix_mean=False, fix_sigma=False)
             fit.fit()
         self.done_pre_fits = True
-
+        attrs = self.pre_fits_data[0].get_fit_pars()
+        print("%s \n", attrs)
+  
 
     def perform_central_fits(self):
         """
@@ -560,8 +572,14 @@ class MLFitter: # pylint: disable=too-many-instance-attributes
             pre_fit = None
             if self.init_central_fits_from[(ibin1, ibin2)] == "mc":
                 pre_fit = self.pre_fits_mc[ibin1]
+                if pre_fit.success:
+                    print("MC success \n")
+                    print("test mc \n")
             else:
                 pre_fit = self.pre_fits_data[ibin1]
+                print("test \n")
+                if pre_fit.success:
+                    print("Data success \n")
             if not pre_fit.success and self.lock_override_init[(ibin1, ibin2)] \
                     and "sigma" not in self.lock_override_init[(ibin1, ibin2)]:
                 self.logger.warning("Requested pre-fit on %s not successful but requested for " \
@@ -704,7 +722,7 @@ class MLFitter: # pylint: disable=too-many-instance-attributes
         Initialize all systematic fits required in an MLHEP analysis run. Using MLFitParsFactory
         to retrieve systematic fit parameters.
         """
-
+        print('TESTEST')
         if self.is_initialized_syst:
             self.logger.warning("Syst already initialized. Skip...")
             return
@@ -716,7 +734,9 @@ class MLFitter: # pylint: disable=too-many-instance-attributes
         self.init_syst_fits_from = {}
 
         for ibin1, ibin2, pars in self.pars_factory.yield_syst_pars():
+            print('TEST')
             if not pars:
+                print ('NOT')
                 self.syst_fits[(ibin1, ibin2)] = None
                 continue
             self.syst_fits[(ibin1, ibin2)] = FitSystAliHF( \

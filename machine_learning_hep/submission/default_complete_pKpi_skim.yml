@@ -1,3 +1,4 @@
+case: LcpKpi # used to find the database file unless specified explicitly as do_entire_analysis -d database_analysis
 download:
   alice:
     activate: false
@@ -20,27 +21,27 @@ mergingperiods: # pkl_skimmed_merge_for_ml_all
   mc:
     activate: false
   data:
-    activate: false
+    activate: true
 
 ml_study: # mlout, mlplot
   activate: false
   dopca: false
-  docorrelation: false
-  dotraining: false
-  dotesting: false
-  doapplytodatamc: false
+  docorrelation: true
+  dotraining: true
+  dotesting: true
+  doapplytodatamc: true
   docrossvalidation: false
-  dolearningcurve: false
-  doroc: false
+  dolearningcurve: true
+  doroc: true
   doroctraintest: false
-  doplotdistr: false
-  doimportance: false
+  doplotdistr: true
+  doimportance: true
   doimportanceshap: false
   dogridsearch: false
   dobayesianopt: false
   doboundary: false
-  doefficiency: false
-  dosignifopt: false
+  doefficiency: true
+  dosignifopt: true
   doscancuts: false
 
 mlapplication:
@@ -63,14 +64,14 @@ analysis:
     dojetsystematics: false # analyzer: jetsystematics
   mc:
     histomass: false # processer: process_histomass
-    efficiency: true # processer: process_efficiency
+    efficiency: false # processer: process_efficiency, process_response, process_unfolding
     response: false # processer: process_response
-    feeddown: true # analyzer: feeddown
+    feeddown: false # analyzer: feeddown
     dounfolding: false # analyzer: unfolding, unfolding_closure
   dofit: false # analyzer: fit
   # Control the yield systematic uncertainty
   dosyst: false # analyzer: yield_syst
-  dojetstudies: false # analyzer: fit, efficiency, sideband_sub
+  dojetstudies: false # analyzer: fit, efficiency, side_band_sub
   doeff: false # analyzer: efficiency
   docross: false # analyzer: makenormyields
   doplots: false # analyzer: plotternormyields
@@ -78,8 +79,10 @@ analysis:
 
 systematics:
   cutvar:
-      activate: false
-      do_only_analysis: false # This can be done anytime when mass and efficiency histograms have been produced already for a number of trials
-      resume: false # already done mass and efficiency histograms will not be done again, continue with left trials
+    activate: false
+    probvariationmass: false
+    probvariationeff: false
+    probvariationfit: false
+    probvariationcross: false
   mcptshape:
     activate: false

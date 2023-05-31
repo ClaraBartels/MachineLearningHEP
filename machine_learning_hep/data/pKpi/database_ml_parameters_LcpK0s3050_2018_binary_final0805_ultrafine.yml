@@ -1,0 +1,417 @@
+#############################################################################
+##  © Copyright CERN 2018. All rights not expressly granted are reserved.  ##
+##                 Author: Gian.Michele.Innocenti@cern.ch                  ##
+## This program is free software: you can redistribute it and/or modify it ##
+##  under the terms of the GNU General Public License as published by the  ##
+## Free Software Foundation, either version 3 of the License, or (at your  ##
+## option) any later version. This program is distributed in the hope that ##
+##  it will be useful, but WITHOUT ANY WARRANTY; without even the implied  ##
+##     warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.    ##
+##           See the GNU General Public License for more details.          ##
+##    You should have received a copy of the GNU General Public License    ##
+##   along with this program. if not, see <https://www.gnu.org/licenses/>. ##
+#############################################################################
+
+LcpK0s3050_2018:
+
+  appliedongrid: true
+
+  domlprob_mc: false
+
+  prob_scan:
+    activate: false
+    prob_sel: [0.310625, 0.4, 0.45, 0.47, 0.50, 0.64, 0.65, 0.66, 0.67, 0.68, 0.69, 0.70, 0.72, 0.74, 0.76, 0.78, 0.80, 0.85, 0.9]
+
+  var_scan:
+    activate: false
+    #var_name: signd0
+    #var_name: imp_par_prong0
+    #var_sel: [-1, -0.01, -0.0095, -0.009, -0.0085, -0.008, -0.0075, -0.007, -0.0065, -0.006, -0.0055, -0.005, -0.0045, -0.004, -0.0035, -0.003, -0.0025, -0.002, -0.0015, -0.001, -0.0005, 0.0, 0.0005, 0.001, 0.0015, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01]
+    #var_name: pt_prong0
+    #var_sel: [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5]
+    #var_name: pt_K0s
+    #var_sel: [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5]
+    var_name: ml_prob
+    #var_sel: [0.310625, 0.4, 0.45, 0.47, 0.50, 0.64, 0.65, 0.66, 0.67, 0.68, 0.69, 0.70, 0.72, 0.74, 0.76, 0.78, 0.80, 0.85, 0.9]
+    var_sel: [0.20, 0.2125, 0.225, 0.2375, 0.25, 0.2625, 0.275, 0.2875, 0.30, 0.3125, 0.3250, 0.3375, 0.35, 0.3625, 0.375, 0.3875, 0.40, 0.4125, 0.425, 0.4375, 0.459, 0.468, 0.477, 0.486, 0.495, 0.504, 0.513, 0.522, 0.531, 0.54, 0.549, 0.558, 0.567, 0.576, 0.585, 0.594, 0.603, 0.612, 0.621, 0.630, 0.639, 0.648, 0.657, 0.666, 0.675, 0.684, 0.693, 0.702, 0.711, 0.72, 0.729, 0.738, 0.747, 0.756, 0.765, 0.774, 0.793, 0.802]
+
+  maskmissingvalues:
+    activate: false
+    tomask:
+      nsigTOF_Pr_0: -999.
+
+  nprongs: 3
+  doml: true
+  doml_asprefilter: null #null = 1 training, true = 2 training-prefilter step, false = 2 training-analysis step
+  mass: 2.2864
+  sel_reco_unp: "pt_cand>1"
+  sel_reco_singletrac_unp: null
+  sel_gen_unp: "pt_cand>1 and abs(z_vtx_gen)<10"
+  #sel_cen_unp: ["centrality > 30 and centrality <= 50", null]
+  #sel_cen_unp: "centrality > 30 and centrality <= 50"
+  sel_cen_unp: null
+  sel_good_evt_unp: "is_ev_rej == 0"
+  sel_reco_skim: [null, null, null, null, null, null] #sel_skim_binmin bins
+  sel_gen_skim: [null, null, null, null, null, null] #sel_skim_binmin bins
+  sel_skim_binmin: [1,2,4,6,8,12] #list of nbins
+  sel_skim_binmax: [2,4,6,8,12,24] #list of nbins
+  var_binning: pt_cand
+  dofullevtmerge: false
+  bitmap_sel:
+    var_name: cand_type
+    var_isstd: isstd
+    var_ismcsignal: ismcsignal
+    var_ismcprompt: ismcprompt
+    var_ismcfd: ismcfd
+    var_ismcbkg: ismcbkg
+    var_ismcrefl: ismcrefl
+    isstd : [[0],[]]
+    ismcsignal: [[1],[5]]
+    ismcprompt: [[1,3],[5]]
+    ismcfd: [[1,4],[5]]
+    ismcbkg: [[2],[]]
+    ismcrefl: [[5],[]]
+
+  variables:
+    var_all: [ml_prob,
+              cos_t_star, inv_mass, pt_cand, phi_cand, eta_cand, y_cand, cand_type,
+              dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s, inv_mass_K0s, pt_K0s, radius_K0s,
+              signd0,
+              nsigTPC_Pr_0, nsigTOF_Pr_0, 
+              nsigComb_Pr_0,
+              its_refit_prong1, its_refit_prong2,
+              pt_prong0, pt_prong1, pt_prong2,
+              imp_par_prong0, imp_par_prong1, imp_par_prong2,
+              spdhits_prong0, spdhits_prong1, spdhits_prong2,
+              run_number, ev_id, ev_id_ext]
+    var_evt:
+      data: [centrality, z_vtx_reco, n_vtx_contributors, n_tracks, is_ev_rej,
+             n_tracklets, V0Amult, n_tpc_cls,
+             run_number, ev_id, ev_id_ext,
+             trigger_hasbit_INT7, trigger_hasbit_Central, trigger_hasbit_SemiCentral]
+      mc: [centrality, z_vtx_reco, n_vtx_contributors, n_tracks, is_ev_rej, z_vtx_gen,
+           n_tracklets, V0Amult, n_tpc_cls,
+           run_number, ev_id, ev_id_ext,
+           trigger_hasbit_INT7, trigger_hasbit_Central, trigger_hasbit_SemiCentral]
+    var_gen: [y_cand, pt_cand, eta_cand, phi_cand, cand_type, dau_in_acc, run_number, ev_id, ev_id_ext]
+    var_evt_match: [run_number, ev_id, ev_id_ext]
+    var_training: [[dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+                   imp_par_prong0, nsigComb_Pr_0], #, cos_t_star],
+                   [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+                   imp_par_prong0, nsigComb_Pr_0], #, cos_t_star],
+                   [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+                   imp_par_prong0, nsigComb_Pr_0], #, cos_t_star],
+                   [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+                   imp_par_prong0, nsigComb_Pr_0], #, cos_t_star],
+                   [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,
+                   imp_par_prong0, nsigComb_Pr_0], #, cos_t_star],
+                   [dca_K0s, imp_par_K0s, d_len_K0s, armenteros_K0s, ctau_K0s, cos_p_K0s,      
+                   imp_par_prong0, nsigComb_Pr_0]] #, cos_t_star]]
+    var_signal: signal
+    var_inv_mass: inv_mass
+
+  files_names:
+    namefile_unmerged_tree: AnalysisResults.root
+    namefile_reco: AnalysisResultsReco.pkl.lz4
+    namefile_evt: AnalysisResultsEvt.pkl.lz4
+    namefile_evtvalroot: AnalysisResultsROOTEvtVal.root
+    namefile_evtorig: AnalysisResultsEvtOrig.pkl.lz4
+    namefile_gen: AnalysisResultsGen.pkl.lz4
+    namefile_reco_applieddata: AnalysisResultsRecoAppliedData.pkl.lz4
+    namefile_reco_appliedmc: AnalysisResultsRecoAppliedMC.pkl.lz4
+    namefile_mcweights: mcweights.root
+    treeoriginreco: ['PWGHF_TreeCreatorApply/tree_Lc2V0bachelor', 'PWGHF_TreeCreatorApply3050/tree_Lc2V0bachelor']
+    treeorigingen: ['PWGHF_TreeCreatorApply/tree_Lc2V0bachelor_gen', 'PWGHF_TreeCreatorApply3050/tree_Lc2V0bachelor_gen']
+    treeoriginevt: ['PWGHF_TreeCreatorApply/tree_event_char', 'PWGHF_TreeCreatorApply3050/tree_event_char']
+    treeoutput: "Lctree"
+    histofilename: "masshisto.root"
+    efffilename: "effhisto.root"
+
+  multi:
+    #default values that can be changed here: seedmerge=12, maxfiles=-1, chunksizeunp=100, chunksizeskim=100
+    max_ncand_merge: 1000000 # if < 0, use default merging. Otherwise process_mergeforml_max (with merge_method_max2)
+    data:
+      #lowered for day time
+      nprocessesparallel: 50
+      chunksizeunp: [50] #list of periods
+      chunksizeskim: [50] #list of periods
+      #preapply pass3
+      #fracmerge: [[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]] #list of pT bin in list of periods. Only used in default merging, with process_mergeforml (with merge_method)
+      #                  #if max_ncand_merge > 0, this will only be used for significance calculation
+      #max_frac_merge: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0] #list of pT bins
+      #period: [LHC18qr] #list of periods
+      #unmerged_tree_dir: [/mnt/temp/OngoingAnalysis_LcPbPb/TTree/LcPbPb/vAN-20210405_ROOT6-1/PbPb_data/611_20210406-1720/merged] #list of periods
+      #pkl: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210405_ROOT6-1/PbPb_data_3050/611_20210406-1720/pkl] #list of periods
+      #pkl_skimmed: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210405_ROOT6-1/PbPb_data_3050/611_20210406-1720/pklsk] #list of periods
+      #pkl_skimmed_merge_for_ml: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210405_ROOT6-1/PbPb_data_3050/611_20210406-1720/pklskml] #list of periods
+      #pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210405_ROOT6-1/PbPb_data_3050/611_20210406-1720/pp_data_mltot
+      #pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210405_ROOT6-1/PbPb_data_3050/611_20210406-1720/pp_data_evttot
+
+      #applied pass3
+      fracmerge: [[0.05, 0.01, 0.05, 0.01, 0.15, 0.2]] #list of pT bin in list of periods. Only used in default merging, with process_mergeforml (with merge_method)
+                        #if max_ncand_merge > 0, this will only be used for significance calculation
+      max_frac_merge: [0.05, 0.01, 0.05, 0.01, 0.15, 0.2] #list of pT bins
+      period: [LHC18qr] #list of periods
+      unmerged_tree_dir: [/mnt/temp/Paper_LcPbPb/TTree/LcPbPb/vAN-20210510_ROOT6-1/PbPb_data/630_20210510-2303/merged] #list of periods
+      pkl: [/mnt/temp/Paper_LcPbPb/Derived/LcPbPb/vAN-20210510_ROOT6-1/PbPb_data_3050/630_20210510-2303/pkl] #list of periods
+      #pkl: [/data/Derived/LcPbPb/vAN-20210510_ROOT6-1/PbPb_data_3050/630_20210510-2303/pkl] #list of periods
+      pkl_skimmed: [/mnt/temp/Paper_LcPbPb/Derived/LcPbPb/vAN-20210510_ROOT6-1/PbPb_data_3050/630_20210510-2303/pklsk] #list of periods
+      #pkl_skimmed: [/data/Derived/LcPbPb/vAN-20210510_ROOT6-1/PbPb_data_3050/630_20210510-2303/pklsk] #list of periods
+      pkl_skimmed_merge_for_ml: [~/NOTNEEDED/pklskml] #list of periods
+      pkl_skimmed_merge_for_ml_all: ~/NOTNEEDED/pp_data_mltot
+      pkl_evtcounter_all: ~/NOTNEEDED/pp_data_evttot
+    mc_pK0s_pass3: # mc:
+      nprocessesparallel: 50
+      chunksizeskim: [1000] #list of periods
+      fracmerge : [[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]] #list of pT bin in list of periods.
+      max_frac_merge: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0] #list of pT bins
+      period: [PbPb_sim_pK0s_pass3] #list of periods
+      select_children: [["child_2"]] # select children explicitly
+      unmerged_tree_dir: [/mnt/temp/OngoingAnalysis_LcPbPb/TTree/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim/621_20210426-2053/merged]
+      pkl: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/621_20210426-2053/pkl] #list of periods
+      pkl_skimmed: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/621_20210426-2053/pklsk] #list of periods
+      #pkl_skimmed: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/621_20210426-2053/mlprob_applied/pklsk]
+      pkl_skimmed_merge_for_ml: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/621_20210426-2053/pklskml] #list of periods
+      pkl_skimmed_merge_for_ml_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/621_20210426-2053/pp_mc_prodD2H_mltot
+      pkl_evtcounter_all: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/621_20210426-2053/pp_mrc_prodD2H_evttot
+    mc: #mc_D2H_pass3: # mc:
+      nprocessesparallel: 50
+      chunksizeskim: [1000] #list of periods
+      fracmerge : [[1.0, 1.0, 1.0, 1.0, 1.0, 1.0]] #list of pT bin in list of periods.
+      max_frac_merge: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0] #list of pT bins
+      period: [PbPb_sim_D2H_pass3] #list of periods
+      select_children: [["child_2"]] # select children explicitly
+      unmerged_tree_dir: [/mnt/temp/Paper_LcPbPb/TTree/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim/622_20210426-2053/merged]
+      #pkl: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/622_20210426-2053/pkl]
+      #pkl_skimmed: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/622_20210426-2053/pklsk]
+      pkl: [/mnt/temp/Paper_LcPbPb/Derived/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/622_20210426-2053/no_centrality/pkl]
+      #pkl_skimmed: [/mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/622_20210426-2053/no_centrality/pklsk]
+      pkl_skimmed: [/mnt/temp/Paper_LcPbPb/Derived/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/622_20210426-2053/no_centrality/mlprob_applied/pklsk]
+      pkl_skimmed_merge_for_ml: [~/NOTNEEDED/pklskml_prodD2Hp3] #list of periods
+      pkl_skimmed_merge_for_ml_all: ~/NOTNEEDED/pp_mc_prodD2Hp3_mltot
+      pkl_evtcounter_all: ~/NOTNEEDED/pp_mrc_prodD2Hp3_evttot
+
+  ml:
+    evtsel: is_ev_rej==0
+    triggersel:
+      data: null
+      mc: null
+    candsel:
+      data: null
+      mc: null
+    nbkg: 200000
+    nsig: 200000
+    fracbkgoversig: 2
+    sampletagforsignal: 1
+    sampletagforbkg: 0
+    sel_sigml: ismcprompt == 1
+    sel_bkgml: inv_mass<2.2 or inv_mass>2.36 #ensure to set the cuts as multiples of the bin_width, i.e. left_limit + K * bin_width
+    nkfolds: 5
+    rnd_shuffle: 12
+    rnd_splt: 12
+    test_frac: 0.2
+    binmin: [1,2,4,6,8,12] #list of nbins sel_skim_binmin bins
+    binmax: [2,4,6,8,12,24] #list of nbins sel_skim_binmin bins
+    mltype: BinaryClassification
+    ncorescrossval: 10
+    mlplot: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210405_ROOT6-1/mlplot_binary_3050_final0805 # to be removed
+    mlout: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210405_ROOT6-1/mlout_binary_3050_final0805 # to be removed
+    opt:
+      isFONLLfromROOT: true
+      filename_fonll: 'InputAnalyses/Analysis_LcPbPb/fonll/DmesonLcPredictions_502TeV_y05_FFptDepLHCb_BRpythia8_PDG2020.root' # file with FONLL predictions
+      fonll_particle: 'hLcK0sp'
+      fonll_pred: 'max' # edge of the FONLL prediction
+      FF: 0.1281 # fragmentation fraction
+      sigma_MB: 1  # Minimum Bias cross section (pp) 50.87e-3 [b], 1 for Pb-Pb
+      Taa: 3917 # 23260 [b^-1] in 0-10% Pb-Pb, 3917 [b^-1] in 30-50% Pb-Pb, 1 for pp
+      BR: 1.09e-2 # branching ratio of the decay Lc->pK0s * K0s->pi+pi-
+      f_prompt: 0.9 # estimated fraction of prompt candidates
+      bkg_data_fraction: 0.5 # fraction of real data used in the estimation
+      num_steps: 111 # number of steps used in efficiency and signif. estimation
+      bkg_function: pol1 # fit function for bkg (among TH1 predefined fit functions, e.g. expo, pol1, pol2, ...)
+      save_fit: True # save bkg fits with the various cuts on ML output
+      raahp: [1,1,1,1,1,1] #list of nbins
+      presel_gen_eff: "abs(y_cand) < 0.5 and abs(z_vtx_gen) < 10"
+      mass_fit_lim: [2.14, 2.48] # region for the fit of the invariant mass distribution [GeV/c^2]
+      bin_width: 0.001 # bin width of the invariant mass histogram
+
+  mlapplication:
+    data:
+      pkl_skimmed_dec: [~/NOTNEEDED/skpkldec] #list of periods
+      pkl_skimmed_decmerged: [~/NOTNEEDED/skpkldecmerged] #list of periods
+    mc_pK0s_pass3:
+      pkl_skimmed_dec: [~/NOTNEEDED/skpkldec_pK0sp1] #list of periods
+      pkl_skimmed_decmerged: [~/NOTNEEDED/skpkldecmerged_pK0sp1] #list of periods
+    mc: #mc_D2H_pass3:
+      pkl_skimmed_dec: [~/NOTNEEDED/skpkldec_D2Hp3] #list of periods
+      pkl_skimmed_decmerged: [~/NOTNEEDED/skpkldecmerged_D2Hp3] #list of periods
+    modelname: xgboost
+    modelsperptbin: [Model_pT_1_2.model,
+                     Model_pT_2_4.model,
+                     Model_pT_4_6.model,
+                     Model_pT_6_8.model,
+                     Model_pT_8_12.model,
+                     Model_pT_12_24.model]
+    modelsperptbin_hipe4ml: [ModelHandler_pT_1_2.pkl,
+                             ModelHandler_pT_2_4.pkl,
+                             ModelHandler_pT_4_6.pkl,
+                             ModelHandler_pT_6_8.pkl, 
+                             ModelHandler_pT_8_12.pkl, 
+                             ModelHandler_pT_12_24.pkl]
+    ml_prefilter_probcut: [0.2, 0.2, 0.0, 0.0, 0.0, 0.0]
+    probcutpresel:
+      data: [0.2, 0.2, 0.0, 0.0, 0.0, 0.0]
+      mc: [0.2, 0.2, 0.0, 0.0, 0.0, 0.0]
+    #probcutoptimal: [0.47, 0.45, 0.40, 0.310625, 0.50, 0.90] #final2202 (after cutvar) + ptcuts_optibias: p>0-0-0-1.3-2.3-0
+    probcutoptimal: [0.552775, 0.45, 0.3415, 0.310625, 0.50, 0.9165375] #v0207 newWP1
+
+  analysis:
+    dir_general_plots: /mnt/temp/OngoingAnalysis_LcPbPb/Derived/LcPbPb/vAN-20210110_ROOT6-1/PbPb_data_3050/563_20210111-1003/applied_grid/analysis_plots
+
+    indexhptspectrum: 5 #kD0Kpi=0, kDplusKpipi=1, kDstarD0pi=2, kDsKKpi=3, kLctopKpi=4, kLcK0Sp=5
+    indexhptspectrumraa: 6 #pK0s
+    indexhptspectrumcomp: 5 #kLctopK0s
+    sigmav0: 1.e-12 #NB: multiplied by 1e12 before giving to HFPtSpectrum!
+    sigmaraa: 0.0110 #BR pK0s, since BR is in pp ref file
+    fd_method: 2 #knone=0, kfc=1, kNb=2
+    fd_method_raa: 1 #kNb
+    cctype: 14 #k3050
+    cctype_raa: 11 #k3050
+    cctype_comp: 1 #k3050
+
+    #inputfonllpred: data/fonll/old_predictions/D0DplusDstarPredictions_502TeV_y05_noYShift_all_191017_BDShapeCorrected.root #prel
+    inputfonllpred: data/fonll/DmesonLcPredictions_502TeV_y05_FFptDepLHCb_BRpythia8_PDG2020.root
+    #pp_reference: data/ppref/LcPtSpectrumAverage_pp5_RelativeStatPlusSyst_StatUncorr_PbPbReference_1_2_4_6_8_12_24.root #prel
+    #pp_reference: data/ppref/Lc_ppreference_pp5TeV_noyshift_pt_1_2_4_6_8_12_LcD013TeVscaling_pt_12_24.root #paperproposal
+    pp_reference: data/ppref/Lc_ppreference_pp5TeVfinal_noyshift_pt_1_2_4_6_8_12_LcD013TeVscaling_pt_12_24.root
+
+    MBvspt:
+      proc_type: Dhadrons
+      useperiod: [1]
+      plotbin: [1]
+      #triggerbit: INT7
+      sel_an_binmin: [1,2,4,6,8,12] #list of pt nbins
+      sel_an_binmax: [2,4,6,8,12,24] #list of pt nbins
+      binning_matching: [0,1,2,3,4,5] #list of pt nbins
+
+      #presel_gen_eff: abs(y_cand) < 0.5 and abs(z_vtx_gen) < 10 and centrality > 30 and centrality <= 50
+      evtsel: is_ev_rej==0 and centrality > 30 and centrality <= 50
+      presel_gen_eff: abs(y_cand) < 0.5 and abs(z_vtx_gen) < 10
+      evtsel_eff: is_ev_rej==0 and abs(z_vtx_gen) < 10
+
+      triggersel:
+        data: null
+        mc: null
+
+      use_cuts: True
+      cuts:
+        - Null
+        - Null
+        - Null
+        - "pt_prong0 > 1.3"
+        - "pt_prong0 > 2.3"
+        - Null
+
+      apply_pt_weights: true
+      apply_2d_weights: true
+      event_weighting_mc:
+        PbPb_sim_D2H_pass3:
+          #Files from paper proposal analysis. New splines + retrieved statistics should have no effect. So not updated.
+          - filepath: [/home/lvermunt/MachineLearningHEP_Lc/MachineLearningHEP/Analyses/ALICE_LcPbPb/weights/weights_measured_LHC20g2b.root, #D0_LcD0TAMUmax_LHC20g2b.root,
+                       /home/lvermunt/MachineLearningHEP_Lc/MachineLearningHEP/machine_learning_hep/derive_weights/Lc_PbPb3050/weights_n_tracklets_Lc_PbPb3050_data.root]
+            histo_name: [ptweights,
+                         n_tracklets_0_LHC18qr_weights]
+            according_to: [pt_cand,
+                           n_tracklets]
+
+      data:
+        runselection: [null]
+        results: [/data/DerivedResults/LcPbPb/vAN-20210510_ROOT6-1/PbPb_data_3050/630_20210510-2303/applied_grid/resultsMBvspt_3050_PLBreview_FineBin1] #list of periods
+        resultsallp: /data/DerivedResults/LcPbPb/vAN-20210510_ROOT6-1/PbPb_data_3050/applied_grid/resultsMBvspt_3050_PLBreview_FineBin1
+      mc:
+        runselection: [null]
+        results: [/data/DerivedResults/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/622_20210426-2053/no_centrality/mlprob_applied/resultsMBvspt_MC_3050_PLBreview_FineBin1] #list of periods
+        resultsallp: /data/DerivedResults/LcPbPb/vAN-20210426_ROOT6-1/PbPb_sim_3050/no_centrality/mlprob_applied/resultsMBvspt_MC_3050_PLBreview_FineBin1
+
+      # The global mass limits
+      mass_fit_lim: [2.0864, 2.4864]  # region for the fit of the invariant mass distribution [GeV/c^2]
+      bin_width: 0.00001 # bin width of the invariant mass histogram
+      # To initialize the individual fits in pT bins
+      # Decide whether to take the sigma from MC or data for individual fits
+      init_fits_from: [mc,mc,mc,mc,mc,mc] # data or mc
+      sgnfunc: [kGaus,kGaus,kGaus,kGaus,kGaus,kGaus]
+      #bkgfunc: [6,Pol2,Pol2,Pol2,Pol2,Pol2] #final2202 and v0207 oldWP
+      bkgfunc: [6,6,Pol2,Pol2,Pol2,Pol2] #v0207 newWP1
+      masspeak: 2.2864
+      #massmin: [2.14,2.14,2.14,2.14,2.13,2.14] #final2202 and v0207 oldWP
+      #massmax: [2.436,2.436,2.436,2.436,2.456,2.436] #final2202 and v0207 oldWP
+      massmin: [2.14,2.14,2.14,2.14,2.13,2.14] #final2202 and v0207 newWP1
+      massmax: [2.436,2.436,2.436,2.436,2.446,2.436] #final2202 and v0207 newWP1
+      rebin: [10,10,10,10,10,10]
+      first_used_bin: [-1, -1, -1, -1, -1, -1]
+      # Fix mean and/or sigma
+      FixedMean: False
+      SetFixGaussianSigma: [false, false, false, false, false, false] #[true,true,true,true,true,true]
+      # Use value set for "masspeak" for initializing total fit, otherwise what is derived from MC fit is used
+      SetInitialGaussianMean: true
+      # Use values set for "sigmaarray" for initializing total fit (per pT bin),
+      # otherwise what is derived from MC fit is used
+      SetInitialGaussianSigma: [true, true, true, true, true, true] #[false,false,false,false,false,false]
+      # Max percentage deviation in sigma (from init) to be considered as a good fit
+      MaxPercSigmaDeviation: 0.75
+      # Number of initial signal sigmas around the mean to be excluded for side-band fit
+      exclude_nsigma_sideband: 4
+      # Sigma around mean where signal is integrated after total fit has been done
+      nsigma_signal: 3
+      dolikelihood: true
+      sigmaarray: [0.0078,0.0079,0.0094,0.0105,0.0119,0.0163]
+      FixedSigma: false
+      fitcase: Lc
+      latexnamehadron: "#Lambda_{c}^{pK0s}"
+      nevents: null
+      dodoublecross: false
+
+      systematics:
+        # For now don't do these things per pT bin
+        max_chisquare_ndf: 2.
+        rebin: [0]
+        first_used_bin: True
+        massmin: [2.120, 2.130, 2.140, 2.150, 2.160]
+        massmax: [2.416, 2.426, 2.436, 2.446, 2.456]
+        bincount_sigma: [3., 5.]
+        bkg_funcs: [Pol2, Pol3] #[kExpo, Pol2, Pol3, Pol4]
+        # Whether to include the free sigma option in the derivation of raw yield uncertainty in given pT bin
+        consider_free_sigma: [False, False, False, False, False, False]
+        # Chose which sigma should be taken to initialize the multi trial
+        # If nothing is specified the value of the central fit is taken
+        # can be a sigle value taken for all pT and mult bins
+        #init_sigma_from: "central"
+        # Can be a list covering all pT bins
+        init_sigma_from: [mc, mc, mc, mc, mc, mc]
+        min_signif: 2.8
+        rel_var_sigma_up: 0.15
+        rel_var_sigma_down: 0.15
+
+  systematics:
+    probvariation:
+      useperiod: [1] #period from where to define prob cuts
+      #ncutvar: 20 #number of looser and tighter variations
+      #maxperccutvar: 0.25 #max diff in efficiency for loosest/tightest var
+      #cutvarminrange: [0.20, 0.20, 0.01, 0.01, 0.20, 0.80] #Min starting point for scan
+      #cutvarmaxrange: [0.75, 0.67, 0.60, 0.55, 0.75, 0.98] #Max starting point for scan
+      ncutvar: 20 #number of looser and tighter variations
+      maxperccutvar: 0.50 #max diff in efficiency for loosest/tightest var
+      cutvarminrange: [0.20, 0.20, 0.01, 0.01, 0.01, 0.01] #Min starting point for scan
+      cutvarmaxrange: [0.90, 0.90, 0.85, 0.80, 0.85, 0.99] #Max starting point for scan
+      fixedmean: False #Fix mean cutvar histo to central fit
+      fixedsigma: False #Fix sigma cutvar histo to central fit
+    mcptshape:
+      #FONLL / generated LHC19h4c1
+      weights: []
+      #From SetPtWeightsFromFONLL13overLHC17c3a12 in AliPhysics
+      #weights: []
+      weights_min_pt: 0
+      weights_max_pt: 40
+      weights_bins: 400
+
+

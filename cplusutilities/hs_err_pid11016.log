@@ -1,0 +1,101 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 16384 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   The process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+#   JVM is running with Unscaled Compressed Oops mode in which the Java heap is
+#     placed in the first 4GB address space. The Java Heap base address is the
+#     maximum limit for the native heap growth. Please use -XX:HeapBaseMinAddress
+#     to set the Java Heap base and to place the Java Heap above 4GB virtual address.
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2659), pid=11016, tid=25154
+#
+# JRE version: OpenJDK Runtime Environment 
+(Zulu12.2+3-CA) (12.0.1+12) (build 12.0.1+12)
+# Java VM: OpenJDK 64-Bit Server VM (12.0.1+12, mixed mode, sharing, tiered, compressed oops, g1 gc, linux-amd64)
+# Core dump will be written. Default location: Core dumps may be processed with "/usr/share/apport/apport %p %s %c %d %P %E" (or dumping to /home/cbartels/MachineLearningHEP/cplusutilities/core.11016)
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -Xms16M -Xmx64M --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED -Djava.io.tmpdir=/tmp -Duserid=1049 alien.JBox
+
+Host: Intel(R) Xeon(R) Gold 6132 CPU @ 2.60GHz, 56 cores, 377G, Ubuntu 18.04.5 LTS
+Time: Mon Mar  8 15:03:22 2021 CET elapsed time: 968 seconds (0d 0h 16m 8s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007fe404002800):  JavaThread "(ML ThP) [ Monitor.Executor ] Worker 14, started: Mon Mar 08 15:00:08 CET 2021" daemon [_thread_new, id=25154, stack(0x00007fe60ade4000,0x00007fe60aee5000)]
+[timeout occurred during error reporting in step "printing current thread"] after 61 s.
+Stack: [0x00007fe60ade4000,0x00007fe60aee5000],  sp=0x00007fe60aee2970,  free space=1018k
+Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0xf739f0]
+[timeout occurred during error reporting in step "printing native stack"] after 37 s.
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x00007fe5b0002fb0, length=43, elements={
+0x00007fe72c129800, 0x00007fe72c12b800, 0x00007fe72c131000, 0x00007fe72c133000,
+0x00007fe72c135000, 0x00007fe72c137000, 0x00007fe72c16d000, 0x00007fe72c170000,
+0x00007fe72c19b800, 0x00007fe72c2f7000, 0x00007fe72c3ae800, 0x00007fe68005c000,
+0x00007fe680039800, 0x00007fe68003b000, 0x00007fe72c41b800, 0x00007fe72c41c800,
+0x00007fe72c5ac000, 0x00007fe72c604800, 0x00007fe688234800, 0x00007fe72c607000,
+0x00007fe72c608800, 0x00007fe72c609800, 0x00007fe72c60b800, 0x00007fe72c60d000,
+0x00007fe72c60f000, 0x00007fe72c610800, 0x00007fe72c612800, 0x00007fe72c614000,
+0x00007fe72c616000, 0x00007fe72c619800, 0x00007fe72c61f800, 0x00007fe72c621800,
+0x00007fe72c623800, 0x00007fe72c626000, 0x00007fe72c012800, 0x00007fe6b401b800,
+0x00007fe6b401c800, 0x00007fe6b4021800, 0x00007fe6b4023000, 0x00007fe59c002000,
+0x00007fe67400e800, 0x00007fe5cc001000, 0x00007fe404002800
+}
+_to_delete_list=0x00007fe6b4047510, length=44, elements={
+0x00007fe72c129800, 0x00007fe72c12b800, 0x00007fe72c131000, 0x00007fe72c133000,
+0x00007fe72c135000, 0x00007fe72c137000, 0x00007fe72c16d000, 0x00007fe72c170000,
+0x00007fe72c19b800, 0x00007fe72c2f7000, 0x00007fe72c3ae800, 0x00007fe68005c000,
+0x00007fe680039800, 0x00007fe68003b000, 0x00007fe72c41b800, 0x00007fe72c41c800,
+0x00007fe72c5ac000, 0x00007fe72c604800, 0x00007fe688234800, 0x00007fe72c607000,
+0x00007fe72c608800, 0x00007fe72c609800, 0x00007fe72c60b800, 0x00007fe72c60d000,
+0x00007fe72c60f000, 0x00007fe72c610800, 0x00007fe72c612800, 0x00007fe72c614000,
+0x00007fe72c616000, 0x00007fe72c619800, 0x00007fe72c61f800, 0x00007fe72c621800,
+0x00007fe72c623800, 0x00007fe72c626000, 0x00007fe72c012800, 0x00007fe6b401b800,
+0x00007fe6b401c800, 0x00007fe6b4021800, 0x00007fe6b4023000, 0x00007fe59c002000,
+0x00007fe674011800, 0x00007fe67400e800, 0x00007fe5cc001000, 0x00007fe404002800
+}
+
+Java Threads: ( => current thread )
+  0x00007fe72c129800 JavaThread "Reference Handler" daemon [_thread_blocked, id=11024, stack(0x00007fe7017dd000,0x00007fe7018de000)]
+  0x00007fe72c12b800 JavaThread "Finalizer" daemon [_thread_blocked, id=11025, stack(0x00007fe7016dc000,0x00007fe7017dd000)]
+  0x00007fe72c131000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=11026, stack(0x00007fe701440000,0x00007fe701541000)]
+  0x00007fe72c133000 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=11027, stack(0x00007fe70133f000,0x00007fe701440000)]
+  0x00007fe72c135000 JavaThread "C1 CompilerThread0" daemon [_thread_blocked, id=11028, stack(0x00007fe70123e000,0x00007fe70133f000)]
+  0x00007fe72c137000 JavaThread "Sweeper thread" daemon [_thread_blocked, id=11029, stack(0x00007fe70113d000,0x00007fe70123e000)]
+  0x00007fe72c16d000 JavaThread "Common-Cleaner" daemon [_thread_blocked, id=11032, stack(0x00007fe700f3b000,0x00007fe70103c000)]
+  0x00007fe72c170000 JavaThread "Service Thread" daemon [_thread_blocked, id=11034, stack(0x00007fe700d39000,0x00007fe700e3a000)]
+  0x00007fe72c19b800 JavaThread "lazyj.cache.ExpirationCache.ExpiryThread" daemon [_thread_in_vm, id=11037, stack(0x00007fe7005da000,0x00007fe7006db000)]
+  0x00007fe72c2f7000 JavaThread "alien.config.Context.cleanup" daemon [_thread_blocked, id=11051, stack(0x00007fe6b3eff000,0x00007fe6b4000000)]
+  0x00007fe72c3ae800 JavaThread "alien.monitor.MonitorFactory - 1" daemon [_thread_in_vm, id=11122, stack(0x00007fe6b31e9000,0x00007fe6b32ea000)]
+  0x00007fe68005c000 JavaThread " (ML) NTPThread" daemon [_thread_in_vm, id=11125, stack(0x00007fe6b2ac4000,0x00007fe6b2bc5000)]
+  0x00007fe680039800 JavaThread "Stream Real Gobbler" daemon [_thread_blocked, id=11140, stack(0x00007fe6b25c0000,0x00007fe6b26c1000)]
+  0x00007fe68003b000 JavaThread "Stream Real Gobbler" daemon [_thread_blocked, id=11141, stack(0x00007fe6b24bf000,0x00007fe6b25c0000)]
+  0x00007fe72c41b800 JavaThread "Idle server watcher" [_thread_blocked, id=11146, stack(0x00007fe6b1eb9000,0x00007fe6b1fba000)]
+  0x00007fe72c41c800 JavaThread "Thread-7" [_thread_in_native, id=11147, stack(0x00007fe6b23be000,0x00007fe6b24bf000)]
+  0x00007fe72c5ac000 JavaThread "https-jsse-nio-127.0.0.1-10100-BlockPoller" daemon [_thread_in_vm, id=11156, stack(0x00007fe6b0fa5000,0x00007fe6b10a6000)]
+  0x00007fe72c604800 JavaThread "Catalina-utility-1" [_thread_in_Java, id=11160, stack(0x00007fe6b34ec000,0x00007fe6b35ed000)]
+  0x00007fe688234800 JavaThread "Catalina-utility-2" [_thread_blocked, id=11161, stack(0x00007fe6b33eb000,0x00007fe6b34ec000)]
+  0x00007fe72c607000 JavaThread "https-jsse-nio-127.0.0.1-10100-exec-1" daemon [_thread_blocked, id=11162, stack(0x00007fe6b32ea000,0x00007fe6b33eb000)]
+  0x00007fe72c608800 JavaThread "https-jsse-nio-127.0.0.1-10100-exec-2" daemon [_thread_blocked, id=11163, stack(0x00007fe6b0ca4000,0x00007fe6b0da5000)]
+  0x00007fe72c609800 JavaThread "https-jsse-nio-127.0.0.1-10100-exec-3" daemon [_thread_blocked, id=11164, stack(0x00007fe6b0ba3000,0x00007fe6b0ca4000)]
+  0x00007fe72c60b800 JavaThread "https-jsse-nio-127.0.0.1-10100-exec-4" daemon [_thread_blocked, id=11165, stack(0x00007fe6b0aa2000,0x00007fe6b0ba3000)]
+  0x00007fe72c60d000 JavaThread "https-jsse-nio-127.0.0.1-10100-exec-5" daemon [_thread_blocked, id=11166, stack(0x00007fe6b09a1000,0x00007fe6b0aa2000)]
+  0x00007fe72c60f000 JavaThread "https-jsse-nio-127.0.0.1-10100-exec-6" daemon [_thread_blocked, id=11167, stack(0x00007fe6b08a0000,0x00007fe6b09a1000)]
+  0x00007fe72c610800 JavaThread "https-jsse-nio-127.0.0.1-10100-exec-7" daemon [_thread_blocked, id=11168, stack(0x00007fe6b079f000,0x00007fe6b08a0000)

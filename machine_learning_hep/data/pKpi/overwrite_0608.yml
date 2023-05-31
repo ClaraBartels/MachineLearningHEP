@@ -1,0 +1,46 @@
+
+sel_reco_skim: ["pt_prong0>0.40 and pt_prong1>0.40 and pt_prong2>0.40"]
+
+sel_skim_binmin: [6] #list of nbins
+sel_skim_binmax: [8] #list of nbins
+
+ml:
+  binmin: [6] #list of nbins sel_skim_binmin bins
+  binmax: [8] #list of nbins sel_skim_binmin bins
+  mlplot: /mnt/temp/OngoingAnalyses_LctopKpiPbPb/010_pass3/mlplot010_0608_bayesian # to be removed
+  mlout: /mnt/temp/OngoingAnalyses_LctopKpiPbPb/010_pass3/mlout010_0608_bayesian # to be removed
+
+mlapplication:
+  data:
+      pkl_skimmed_dec: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20210221_ROOT6-1/PbPb_data/589_20210223-1101/child_2/pklsdec_0608,
+                          /mnt/temp/TTreeLctopKpiPbPb/vAN-20210221_ROOT6-1/PbPb_data/589_20210223-1101/child_1/pklskdec_0608] #list of periods
+      pkl_skimmed_decmerged: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20210221_ROOT6-1/PbPb_data/589_20210223-1101/child_2/pklskdecmerged_0608,
+                          /mnt/temp/TTreeLctopKpiPbPb/vAN-20210221_ROOT6-1/PbPb_data/589_20210223-1101/child_1/pklskdecmerged_0608] #list of periods
+  mc:
+
+      pkl_skimmed_dec: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20210301_ROOT6-1/PbPb_sim/600_20210302-1557/child_2/pklskdec_0608,
+                        /mnt/temp/TTreeLctopKpiPbPb/vAN-20210301_ROOT6-1/PbPb_sim/600_20210302-1557/child_1/pklskdec_0608] #list of periods
+      pkl_skimmed_decmerged: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20210301_ROOT6-1/PbPb_sim/600_20210302-1557/child_2//pklskdecmerged_0608,
+                              /mnt/temp/TTreeLctopKpiPbPb/vAN-20210301_ROOT6-1/PbPb_sim/600_20210302-1557/child_1/pklskdecmerged_0608] #list of periods
+
+  modelsperptbin: [xgboost_classifierLcpKpi_dfselection_pt_cand_6.0_8.0.sav]
+
+  probcutpresel:
+    data: [0.5] #list of nbins  sel_skim_binmin bins
+    mc: [0.5] #list of nbins  sel_skim_binmin bins
+  probcutoptimal: [0.95] #list of nbins  sel_skim_binmin bins
+
+analysis:
+  MBvspt:
+    sel_an_binmin: [6] #list of pt nbins
+    sel_an_binmax: [8] #list of pt nbins
+    data:
+      runselection: [null, null]
+      results: ['/home/cbartels/Output/010_pass3_new/0608/LHC18r','/home/cbartels/Output/010_pass3_new/0608/LHC18q'] #list of periods
+      resultsallp: '/home/cbartels/Output/010_pass3_new/0608/LHC18qr'
+    mc:
+      runselection: [null, null]
+      results: ['/home/cbartels/Output/010_pass3_new/0608/LHC19c3a_all_r', '/home/cbartels/Output/010_pass3_new/0608/LHC19c3a_all_q'] #list of periods
+      resultsallp: '/home/cbartels/Output/010_pass3_new/0608/LHC10c3a_qr'
+
+

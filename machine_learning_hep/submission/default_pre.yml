@@ -39,8 +39,8 @@ ml_study:
   dogridsearch: false
   dobayesianopt: false
   doboundary: false
-  doefficiency: false
-  dosignifopt: false
+  doefficiency: true
+  dosignifopt: true
   doscancuts: false
 
 mlapplication:
@@ -57,7 +57,7 @@ analysis:
   type: YYYY
   # Do each period separately including merged (true)
   # Do only merged (false)
-  doperperiod: true
+  doperperiod: false
   data:
     histomass: false
     dojetsystematics: false

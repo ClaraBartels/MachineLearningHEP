@@ -90,10 +90,21 @@ def calc_signif(sig_array, sig_err_array, bkg_array, bkg_err_array):
         signif_err = 0.
 
         if sig > 0 and (sig + bkg) > 0:
+            #print("signal:")
+            #print(sig)
+            #print("bkg:")
+            #print(bkg)
+            #print("signal error:")
+            #print(sig_err)
+            #print("bkg error:")
+            #print(bkg_err)
             signif = sig / np.sqrt(sig + bkg)
+            #print("signif:")
+            #print(signif)
             signif_err = signif * np.sqrt((sig_err**2 + bkg_err**2) / (4 * (sig + bkg)**2) + \
                          (bkg / (sig + bkg)) * sig_err**2 / sig**2)
-
+            #print("error:")
+            #print(signif_err)
         signif_array.append(signif)
         signif_err_array.append(signif_err)
 
@@ -101,7 +112,7 @@ def calc_signif(sig_array, sig_err_array, bkg_array, bkg_err_array):
 
 def calc_eff(num, den):
     eff = num / den
-    eff_err = np.sqrt(eff * (1 - eff) / den)
+    eff_err = np.sqrt((eff * (1 - eff) / den)**2)
 
     return eff, eff_err
 

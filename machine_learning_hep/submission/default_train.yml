@@ -25,7 +25,7 @@ mergingperiods:
 ml_study:
   activate: true
   dopca: false
-  docorrelation: true
+  docorrelation: false
   dotraining: true
   dotesting: true
   doapplytodatamc: true
@@ -33,10 +33,11 @@ ml_study:
   dolearningcurve: true
   doroc: true
   doroctraintest: true
-  doplotdistr: false
+  doplotdistr: true
   doimportance: true
   dogridsearch: false
   dobayesianopt: false
+  doimportanceshap: true
   doboundary: false
   doefficiency: true
   dosignifopt: true
@@ -56,7 +57,7 @@ analysis:
   type: YYYY
   # Do each period separately including merged (true)
   # Do only merged (false)
-  doperperiod: true
+  doperperiod: false
   data:
     histomass: false
     dojetsystematics: false

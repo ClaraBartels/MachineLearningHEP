@@ -111,7 +111,12 @@ def count_df_length_pkl(*pkls):
     for pkl in pkls:
         myfile = openfile(pkl, "rb")
         df = pickle.load(myfile)
+        #if len(df.index) > 10000:
+        #    print("len(df.index)")
+        #    print(len(df.index))
         count += len(df.index)
+        #print(count)
+    print(count)
     return count
 
 def merge_method(listfiles, namemerged):

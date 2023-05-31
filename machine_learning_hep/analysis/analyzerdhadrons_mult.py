@@ -42,7 +42,7 @@ class AnalyzerDhadrons_mult(Analyzer): # pylint: disable=invalid-name
     def __init__(self, datap, case, typean, period):
         super().__init__(datap, case, typean, period)
         self.logger = get_logger()
-        self.logger.warning("TEST")
+        #self.logger.warning("TEST")
         #namefiles pkl
         self.v_var_binning = datap["var_binning"]
         self.lpt_finbinmin = datap["analysis"][self.typean]["sel_an_binmin"]
@@ -152,7 +152,7 @@ class AnalyzerDhadrons_mult(Analyzer): # pylint: disable=invalid-name
         self.var2ranges.append(self.lvar2_binmax[-1])
         # More specific fit options
         self.include_reflection = datap["analysis"][self.typean].get("include_reflection", False)
-        print(self.var2ranges)
+        #print(self.var2ranges)
 
         self.p_nevents = datap["analysis"][self.typean]["nevents"]
         self.p_bineff = datap["analysis"][self.typean]["usesinglebineff"]
@@ -289,11 +289,13 @@ class AnalyzerDhadrons_mult(Analyzer): # pylint: disable=invalid-name
             h_sel_pr.GetYaxis().SetTitle("Acc x efficiency (prompt) %s %s (1/GeV)" \
                     % (self.p_latexnhadron, self.typean))
             h_sel_pr.SetMinimum(0.)
-            h_sel_pr.SetMaximum(1.5)
+            h_sel_pr.SetMaximum(0.1)
         legeff.Draw()
+        #cEff.SetLogy()
         cEff.SaveAs("%s/Eff%s%s.eps" % (self.d_resultsallpmc,
                                         self.case, self.typean))
-
+        h_sel_pr.SaveAs("%s/Eff%s%s.root" % (self.d_resultsallpmc,
+                                        self.case, self.typean))
         cEffFD = TCanvas('cEffFD', 'The Fit Canvas')
         cEffFD.SetCanvasSize(1900, 1500)
         cEffFD.SetWindowSize(500, 500)
@@ -324,9 +326,11 @@ class AnalyzerDhadrons_mult(Analyzer): # pylint: disable=invalid-name
             h_sel_fd.GetYaxis().SetTitle("Acc x efficiency feed-down %s %s (1/GeV)" \
                     % (self.p_latexnhadron, self.typean))
             h_sel_fd.SetMinimum(0.)
-            h_sel_fd.SetMaximum(1.5)
+            h_sel_fd.SetMaximum(0.1)
         legeffFD.Draw()
         cEffFD.SaveAs("%s/EffFD%s%s.eps" % (self.d_resultsallpmc,
+                                            self.case, self.typean))
+        h_sel_fd.SaveAs("%s/EffFD%s%s.root" % (self.d_resultsallpmc,
                                             self.case, self.typean))
 
 

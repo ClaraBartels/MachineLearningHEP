@@ -1,0 +1,738 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 16384 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   The process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+#   JVM is running with Unscaled Compressed Oops mode in which the Java heap is
+#     placed in the first 4GB address space. The Java Heap base address is the
+#     maximum limit for the native heap growth. Please use -XX:HeapBaseMinAddress
+#     to set the Java Heap base and to place the Java Heap above 4GB virtual address.
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2659), pid=13470, tid=28196
+#
+# JRE version: OpenJDK Runtime Environment 
+(Zulu12.2+3-CA) (12.0.1+12) (build 12.0.1+12)
+# Java VM: OpenJDK 64-Bit Server VM (12.0.1+12, mixed mode, sharing, tiered, compressed oops, g1 gc, linux-amd64)
+# Core dump will be written. Default location: Core dumps may be processed with "/usr/share/apport/apport %p %s %c %d %P %E" (or dumping to /home/cbartels/MachineLearningHEP/cplusutilities/core.13470)
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -Xms16M -Xmx64M --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED alien.JSh
+
+Host: Intel(R) Xeon(R) Gold 6132 CPU @ 2.60GHz, 56 cores, 377G, Ubuntu 18.04.5 LTS
+Time: Mon Mar  8 13:29:59 2021 CET elapsed time: 2036 seconds (0d 0h 33m 56s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007fd99c002000):  JavaThread "process reaper" daemon [_thread_new, id=28196, stack(0x00007fda34a29000,0x00007fda34a4b000)]
+
+Stack: [0x00007fda34a29000,0x00007fda34a4b000],  sp=0x00007fda34a49a10,  free space=130k
+Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0xf739f0]  VMError::report_and_die(int, char const*, char const*, __va_list_tag*, Thread*, unsigned char*, void*, void*, char const*, int, unsigned long)+0x310
+V  [libjvm.so+0xf745bb]  VMError::report_and_die(Thread*, char const*, int, unsigned long, VMErrorType, char const*, __va_list_tag*)+0x2b
+V  [libjvm.so+0x684155]  report_vm_out_of_memory(char const*, int, unsigned long, VMErrorType, char const*, ...)+0xd5
+V  [libjvm.so+0xc26908]  os::pd_commit_memory(char*, unsigned long, bool)+0xf8
+V  [libjvm.so+0xc1e15f]  os::commit_memory(char*, unsigned long, bool)+0x1f
+V  [libjvm.so+0xc280df]  os::pd_create_stack_guard_pages(char*, unsigned long)+0x7f
+V  [libjvm.so+0xf07b10]  JavaThread::run()+0x70
+V  [libjvm.so+0xf0479f]  Thread::call_run()+0x16f
+V  [libjvm.so+0xc2cbae]  thread_native_entry(Thread*)+0xee
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x00007fd99c002d40, length=14, elements={
+0x00007fda2c129800, 0x00007fda2c12b800, 0x00007fda2c130800, 0x00007fda2c133000,
+0x00007fda2c135000, 0x00007fda2c137000, 0x00007fda2c16c800, 0x00007fda2c170000,
+0x00007fda2c19f000, 0x00007fda2c012800, 0x00007fd9a0078000, 0x00007fda2c1ca800,
+0x00007fda2c1ab000, 0x00007fd99c002000
+}
+
+Java Threads: ( => current thread )
+  0x00007fda2c129800 JavaThread "Reference Handler" daemon [_thread_blocked, id=13546, stack(0x00007fda0195e000,0x00007fda01a5f000)]
+  0x00007fda2c12b800 JavaThread "Finalizer" daemon [_thread_blocked, id=13547, stack(0x00007fda0185d000,0x00007fda0195e000)]
+  0x00007fda2c130800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=13548, stack(0x00007fda015c1000,0x00007fda016c2000)]
+  0x00007fda2c133000 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=13549, stack(0x00007fda014c0000,0x00007fda015c1000)]
+  0x00007fda2c135000 JavaThread "C1 CompilerThread0" daemon [_thread_blocked, id=13550, stack(0x00007fda013bf000,0x00007fda014c0000)]
+  0x00007fda2c137000 JavaThread "Sweeper thread" daemon [_thread_blocked, id=13551, stack(0x00007fda012be000,0x00007fda013bf000)]
+  0x00007fda2c16c800 JavaThread "Common-Cleaner" daemon [_thread_blocked, id=13553, stack(0x00007fda010bc000,0x00007fda011bd000)]
+  0x00007fda2c170000 JavaThread "Service Thread" daemon [_thread_blocked, id=13554, stack(0x00007fda00fbb000,0x00007fda010bc000)]
+  0x00007fda2c19f000 JavaThread "lazyj.cache.ExpirationCache.ExpiryThread" daemon [_thread_blocked, id=13558, stack(0x00007fda0075b000,0x00007fda0085c000)]
+  0x00007fda2c012800 JavaThread "DestroyJavaVM" [_thread_blocked, id=13539, stack(0x00007fda34b00000,0x00007fda34c01000)]
+  0x00007fd9a0078000 JavaThread "NonBlockingInputStreamThread" daemon [_thread_blocked, id=13586, stack(0x00007fd9abdfe000,0x00007fd9abeff000)]
+  0x00007fda2c1ca800 JavaThread "JLine Shutdown Hook" [_thread_blocked, id=28188, stack(0x00007fd9abcfd000,0x00007fd9abdfe000)]
+=>0x00007fd99c002000 JavaThread "process reaper" daemon [_thread_new, id=28196, stack(0x00007fda34a29000,0x00007fda34a4b000)]
+
+Other Threads:
+  0x00007fda2c126800 VMThread "VM Thread" [stack: 0x00007fda01a61000,0x00007fda01b61000] [id=13545]
+  0x00007fda2c172800 WatcherThread [stack: 0x00007fda00ebb000,0x00007fda00fbb000] [id=13555]
+  0x00007fda2c047000 GCTaskThread "GC Thread#0" [stack: 0x00007fda12e93000,0x00007fda12f93000] [id=13540]
+  0x00007fd9f8001000 GCTaskThread "GC Thread#1" [stack: 0x00007fda00155000,0x00007fda00255000] [id=13572]
+  0x00007fd9f8002800 GCTaskThread "GC Thread#2" [stack: 0x00007fd9ab4f6000,0x00007fd9ab5f6000] [id=13597]
+  0x00007fd9f8004000 GCTaskThread "GC Thread#3" [stack: 0x00007fd9ab3f4000,0x00007fd9ab4f4000] [id=13598]
+  0x00007fda2c049800 ConcurrentGCThread "G1 Main Marker" [stack: 0x00007fda12d91000,0x00007fda12e91000] [id=13541]
+  0x00007fda2c04b800 ConcurrentGCThread "G1 Conc#0" [stack: 0x00007fda12c8f000,0x00007fda12d8f000] [id=13542]
+  0x00007fda2c0fa800 ConcurrentGCThread "G1 Refine#0" [stack: 0x00007fda024e6000,0x00007fda025e6000] [id=13543]
+  0x00007fda2c0fc000 ConcurrentGCThread "G1 Young RemSet Sampling" [stack: 0x00007fda023e4000,0x00007fda024e4000] [id=13544]
+
+Threads with active compile tasks:
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap address: 0x00000000fc000000, size: 64 MB, Compressed Oops mode: 32-bit
+Narrow klass base: 0x0000000800000000, Narrow klass shift: 3
+Compressed class space size: 1073741824 Address: 0x0000000801114000
+
+Heap:
+ garbage-first heap   total 18432K, used 5069K [0x00000000fc000000, 0x0000000100000000)
+  region size 1024K, 3 young (3072K), 1 survivors (1024K)
+ Metaspace       used 3868K, capacity 5758K, committed 5888K, reserved 1056768K
+  class space    used 385K, capacity 652K, committed 768K, reserved 1048576K
+Heap Regions: E=young(eden), S=young(survivor), O=old, HS=humongous(starts), HC=humongous(continues), CS=collection set, F=free, A=archive, TAMS=top-at-mark-start (previous, next)
+|   0|0x00000000fc000000, 0x00000000fc100000, 0x00000000fc100000|100%|HS|  |TAMS 0x00000000fc000000, 0x00000000fc000000| Complete 
+|   1|0x00000000fc100000, 0x00000000fc200000, 0x00000000fc200000|100%| O|  |TAMS 0x00000000fc100000, 0x00000000fc100000| Untracked 
+|   2|0x00000000fc200000, 0x00000000fc300000, 0x00000000fc300000|100%| O|  |TAMS 0x00000000fc200000, 0x00000000fc200000| Untracked 
+|   3|0x00000000fc300000, 0x00000000fc339600, 0x00000000fc400000| 22%| O|  |TAMS 0x00000000fc300000, 0x00000000fc300000| Untracked 
+|   4|0x00000000fc400000, 0x00000000fc400000, 0x00000000fc500000|  0%| F|  |TAMS 0x00000000fc400000, 0x00000000fc400000| Untracked 
+|   5|0x00000000fc500000, 0x00000000fc500000, 0x00000000fc600000|  0%| F|  |TAMS 0x00000000fc500000, 0x00000000fc500000| Untracked 
+|   6|0x00000000fc600000, 0x00000000fc600000, 0x00000000fc700000|  0%| F|  |TAMS 0x00000000fc600000, 0x00000000fc600000| Untracked 
+|   7|0x00000000fc700000, 0x00000000fc700000, 0x00000000fc800000|  0%| F|  |TAMS 0x00000000fc700000, 0x00000000fc700000| Untracked 
+|   8|0x00000000fc800000, 0x00000000fc800000, 0x00000000fc900000|  0%| F|  |TAMS 0x00000000fc800000, 0x00000000fc800000| Untracked 
+|   9|0x00000000fc900000, 0x00000000fc902040, 0x00000000fca00000|  0%| S|CS|TAMS 0x00000000fc900000, 0x00000000fc900000| Complete 
+|  10|0x00000000fca00000, 0x00000000fca00000, 0x00000000fcb00000|  0%| F|  |TAMS 0x00000000fca00000, 0x00000000fca00000| Untracked 
+|  11|0x00000000fcb00000, 0x00000000fcb00000, 0x00000000fcc00000|  0%| F|  |TAMS 0x00000000fcb00000, 0x00000000fcb00000| Untracked 
+|  12|0x00000000fcc00000, 0x00000000fcc00000, 0x00000000fcd00000|  0%| F|  |TAMS 0x00000000fcc00000, 0x00000000fcc00000| Untracked 
+|  13|0x00000000fcd00000, 0x00000000fcd00000, 0x00000000fce00000|  0%| F|  |TAMS 0x00000000fcd00000, 0x00000000fcd00000| Untracked 
+|  14|0x00000000fce00000, 0x00000000fce126f0, 0x00000000fcf00000|  7%| E|  |TAMS 0x00000000fce00000, 0x00000000fce00000| Complete 
+|  15|0x00000000fcf00000, 0x00000000fd000000, 0x00000000fd000000|100%| E|CS|TAMS 0x00000000fcf00000, 0x00000000fcf00000| Complete 
+|  62|0x00000000ffe00000, 0x00000000ffe46000, 0x00000000fff00000| 27%|OA|  |TAMS 0x00000000ffe00000, 0x00000000ffe00000| Untracked 
+|  63|0x00000000fff00000, 0x00000000fff72000, 0x0000000100000000| 44%|CA|  |TAMS 0x00000000fff00000, 0x00000000fff00000| Untracked 
+
+Card table byte_map: [0x00007fda34ac0000,0x00007fda34ae0000] _byte_map_base: 0x00007fda342e0000
+
+Marking Bits (Prev, Next): (CMBitMap*) 0x00007fda2c048658, (CMBitMap*) 0x00007fda2c048698
+ Prev Bits: [0x00007fda13093000, 0x00007fda13193000)
+ Next Bits: [0x00007fda12f93000, 0x00007fda13093000)
+
+Polling page: 0x00007fda34c1f000
+
+Metaspace:
+
+Usage:
+  Non-class:      4.99 MB capacity,     3.40 MB ( 68%) used,     1.57 MB ( 31%) free+waste,    18.94 KB ( <1%) overhead. 
+      Class:    652.00 KB capacity,   385.87 KB ( 59%) used,   255.45 KB ( 39%) free+waste,    10.69 KB (  2%) overhead. 
+       Both:      5.62 MB capacity,     3.78 MB ( 67%) used,     1.82 MB ( 32%) free+waste,    29.62 KB ( <1%) overhead. 
+
+Virtual space:
+  Non-class space:        8.00 MB reserved,       5.00 MB ( 62%) committed 
+      Class space:        1.00 GB reserved,     768.00 KB ( <1%) committed 
+             Both:        1.01 GB reserved,       5.75 MB ( <1%) committed 
+
+Chunk freelists:
+   Non-Class:  768 bytes
+       Class:  512 bytes
+        Both:  1.25 KB
+
+CodeHeap 'non-profiled nmethods': size=118884Kb used=479Kb max_used=479Kb free=118404Kb
+ bounds [0x00007fda1c491000, 0x00007fda1c701000, 0x00007fda238aa000]
+CodeHeap 'profiled nmethods': size=118884Kb used=2349Kb max_used=2349Kb free=116534Kb
+ bounds [0x00007fda15078000, 0x00007fda152e8000, 0x00007fda1c491000]
+CodeHeap 'non-nmethods': size=7992Kb used=1124Kb max_used=3428Kb free=6867Kb
+ bounds [0x00007fda148aa000, 0x00007fda14c0a000, 0x00007fda15078000]
+ total_blobs=2056 nmethods=1186 adapters=339
+ compilation: enabled
+              stopped_count=0, restarted_count=0
+ full_count=0
+
+Compilation events (10 events):
+Event: 1084.398 Thread 0x00007fda2c133000 1288   !   4       java.io.PrintWriter::newLine (65 bytes)
+Event: 1084.401 Thread 0x00007fda2c133000 nmethod 1288 0x00007fda1c504390 code [0x00007fda1c504540, 0x00007fda1c5049c8]
+Event: 1485.215 Thread 0x00007fda2c133000 1289 % !   4       alien.shell.BusyBox::callJBox @ 29 (238 bytes)
+Event: 1485.244 Thread 0x00007fda2c133000 nmethod 1289% 0x00007fda1c504c90 code [0x00007fda1c504f00, 0x00007fda1c505d30]
+Event: 2036.874 Thread 0x00007fda2c133000 1291       4       java.lang.invoke.LambdaForm$Name::replaceNames (174 bytes)
+Event: 2036.876 Thread 0x00007fda2c135000 1290       3       java.lang.invoke.ClassSpecializer$SpeciesData::fieldCount (10 bytes)
+Event: 2036.879 Thread 0x00007fda2c135000 nmethod 1290 0x00007fda1513a510 code [0x00007fda1513a6e0, 0x00007fda1513a928]
+Event: 2036.913 Thread 0x00007fda2c133000 nmethod 1291 0x00007fda1c506910 code [0x00007fda1c506b60, 0x00007fda1c507d90]
+Event: 2036.920 Thread 0x00007fda2c135000 1293       3       sun.invoke.util.VerifyAccess::isTypeVisible (47 bytes)
+Event: 2036.921 Thread 0x00007fda2c135000 nmethod 1293 0x00007fda15193b90 code [0x00007fda15193d80, 0x00007fda151941b8]
+
+GC Heap History (10 events):
+Event: 288.460 GC heap before
+{Heap before GC invocations=2 (full 0):
+ garbage-first heap   total 18432K, used 8221K [0x00000000fc000000, 0x0000000100000000)
+  region size 1024K, 6 young (6144K), 1 survivors (1024K)
+ Metaspace       used 3821K, capacity 5732K, committed 5888K, reserved 1056768K
+  class space    used 379K, capacity 645K, committed 768K, reserved 1048576K
+}
+Event: 288.461 GC heap after
+{Heap after GC invocations=3 (full 0):
+ garbage-first heap   total 18432K, used 4218K [0x00000000fc000000, 0x0000000100000000)
+  region size 1024K, 1 young (1024K), 1 survivors (1024K)
+ Metaspace       used 3821K, capacity 5732K, committed 5888K, reserved 1056768K
+  class space    used 379K, capacity 645K, committed 768K, reserved 1048576K
+}
+Event: 632.682 GC heap before
+{Heap before GC invocations=3 (full 0):
+ garbage-first heap   total 18432K, used 9338K [0x00000000fc000000, 0x0000000100000000)
+  region size 1024K, 6 young (6144K), 1 survivors (1024K)
+ Metaspace       used 3821K, capacity 5732K, committed 5888K, reserved 1056768K
+  class space    used 379K, capacity 645K, committed 768K, reserved 1048576K
+}
+Event: 632.682 GC heap after
+{Heap after GC invocations=4 (full 0):
+ garbage-first heap   total 18432K, used 4071K [0x00000000fc000000, 0x0000000100000000)
+  region size 1024K, 1 young (1024K), 1 survivors (1024K)
+ Metaspace       used 3821K, capacity 5732K, committed 5888K, reserved 1056768K
+  class space    used 379K, capacity 645K, committed 768K, reserved 1048576K
+}
+Event: 974.664 GC heap before
+{Heap before GC invocations=4 (full 0):
+ garbage-first heap   total 18432K, used 9191K [0x00000000fc000000, 0x0000000100000000)
+  region size 1024K, 6 young (6144K), 1 survivors (1024K)
+ Metaspace       used 3839K, capacity 5736K, committed 5888K, reserved 1056768K
+  class space    used 379K, capacity 645K, committed 768K, reserved 1048576K
+}
+Event: 974.664 GC heap after
+{Heap after GC invocations=5 (full 0):
+ garbage-first heap   total 18432K, used 4049K [0x00000000fc000000, 0x0000000100000000)
+  region size 1024K, 1 young (1024K), 1 survivors (1024K)
+ Metaspace       used 3839K, capacity 5736K, committed 5888K, reserved 1056768K
+  class space    used 379K, capacity 645K, committed 768K, reserved 1048576K
+}
+Event: 1389.699 GC heap before
+{Heap before GC invocations=5 (full 0):
+ garbage-first heap   total 18432K, used 10193K [0x00000000fc000000, 0x0000000100000000)
+  region size 1024K, 7 young (7168K), 1 survivors (1024K)
+ Metaspace       used 3839K, capacity 5736K, committed 5888K, reserved 1056768K
+  class space    used 379K, capacity 645K, committed 768K, reserved 1048576K
+}
+Event: 1389.700 GC heap after
+{Heap after GC invocations=6 (full 0):
+ garbage-first heap   total 18432K, used 4043K [0x00000000fc000000, 0x0000000100000000)
+  region size 1024K, 1 young (1024K), 1 survivors (1024K)
+ Metaspace       used 3839K, capacity 5736K, committed 5888K, reserved 1056768K
+  class space    used 379K, capacity 645K, committed 768K, reserved 1048576K
+}
+Event: 1791.976 GC heap before
+{Heap before GC invocations=6 (full 0):
+ garbage-first heap   total 18432K, used 10187K [0x00000000fc000000, 0x0000000100000000)
+  region size 1024K, 7 young (7168K), 1 survivors (1024K)
+ Metaspace       used 3839K, capacity 5736K, committed 5888K, reserved 1056768K
+  class space    used 379K, capacity 645K, committed 768K, reserved 1048576K
+}
+Event: 1791.977 GC heap after
+{Heap after GC invocations=7 (full 0):
+ garbage-first heap   total 18432K, used 4045K [0x00000000fc000000, 0x0000000100000000)
+  region size 1024K, 1 young (1024K), 1 survivors (1024K)
+ Metaspace       used 3839K, capacity 5736K, committed 5888K, reserved 1056768K
+  class space    used 379K, capacity 645K, committed 768K, reserved 1048576K
+}
+
+Deoptimization events (10 events):
+Event: 915.397 Thread 0x00007fda2c1ca800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007fda1c4fc3c4 method=jdk.internal.misc.Unsafe.allocateUninitializedArray(Ljava/lang/Class;I)Ljava/lang/Object; @ 48 c2
+Event: 915.414 Thread 0x00007fda2c1ca800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007fda1c4fc3c4 method=jdk.internal.misc.Unsafe.allocateUninitializedArray(Ljava/lang/Class;I)Ljava/lang/Object; @ 48 c2
+Event: 915.424 Thread 0x00007fda2c1ca800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007fda1c4fc3c4 method=jdk.internal.misc.Unsafe.allocateUninitializedArray(Ljava/lang/Class;I)Ljava/lang/Object; @ 48 c2
+Event: 2036.406 Thread 0x00007fda2c1ca800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fda1c4f2268 method=java.net.SocketInputStream.read([BIII)I @ 121 c2
+Event: 2036.416 Thread 0x00007fda2c1ca800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fda1c4f4b78 method=sun.nio.cs.StreamDecoder.implRead([CII)I @ 119 c2
+Event: 2036.416 Thread 0x00007fda2c1ca800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fda1c4e8f68 method=java.io.BufferedReader.fill()V @ 154 c2
+Event: 2036.419 Thread 0x00007fda2c1ca800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fda1c505af0 method=alien.shell.BusyBox.callJBox(Ljava/lang/String;Z)Z @ 39 c2
+Event: 2036.435 Thread 0x00007fda2c1ca800 Uncommon trap: reason=class_check action=maybe_recompile pc=0x00007fda1c4fd648 method=java.io.Writer.write(Ljava/lang/String;)V @ 7 c2
+Event: 2036.762 Thread 0x00007fda2c1ca800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fda1c4ffc04 method=java.io.BufferedWriter.flushBuffer()V @ 15 c2
+Event: 2036.763 Thread 0x00007fda2c1ca800 Uncommon trap: reason=unstable_if action=reinterpret pc=0x00007fda1c4fe780 method=sun.nio.cs.StreamEncoder.implFlushBuffer()V @ 7 c2
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (10 events):
+Event: 0.228 Thread 0x00007fda2c1ca800 Exception <a 'java/io/FileNotFoundException'{0x00000000fce4ac90}> (0x00000000fce4ac90) thrown at [/export/home/tester/jenkins/workspace/zulu12-build-linux64/zulu-src/src/hotspot/share/prims/jni.cpp, line 615]
+Event: 0.267 Thread 0x00007fda2c1ca800 Exception <a 'java/lang/NoSuchMethodError'{0x00000000fcd47560}: java.lang.invoke.DirectMethodHandle$Holder.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lan
+Event: 0.268 Thread 0x00007fda2c1ca800 Exception <a 'java/lang/NoSuchMethodError'{0x00000000fcd53878}: java.lang.invoke.DirectMethodHandle$Holder.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lan
+Event: 0.269 Thread 0x00007fda2c1ca800 Exception <a 'java/lang/NoSuchMethodError'{0x00000000fcd686a0}: java.lang.invoke.DirectMethodHandle$Holder.invokeSpecial(Ljava/lang/Object;Ljava/lang/Object;JLjava/lang/Object;Ljava/lang/Object;ILjava/lang/Object;)Ljava/lang/Object;> (0x00000000fcd686a0) 
+Event: 0.269 Thread 0x00007fda2c1ca800 Exception <a 'java/lang/NoSuchMethodError'{0x00000000fcd6b788}: java.lang.invoke.DelegatingMethodHandle$Holder.reinvoke_L(Ljava/lang/Object;JLjava/lang/Object;Ljava/lang/Object;ILjava/lang/Object;)Ljava/lang/Object;> (0x00000000fcd6b788) thrown at [/expor
+Event: 0.270 Thread 0x00007fda2c1ca800 Exception <a 'java/lang/NoSuchMethodError'{0x00000000fcd7c158}: java.lang.invoke.DirectMethodHandle$Holder.invokeStatic(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;J)Ljava/lang/Object;> (0x00000000fcd7c158) thrown at [/export/h
+Event: 0.272 Thread 0x00007fda2c1ca800 Exception <a 'java/lang/NoSuchMethodError'{0x00000000fcd9ab48}: java.lang.invoke.Invokers$Holder.linkToTargetMethod(Ljava/lang/Object;Ljava/lang/Object;ILjava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;> (0x00000000fcd9ab48) thrown at [/export/home/
+Event: 0.277 Thread 0x00007fda2c1ca800 Exception <a 'java/lang/NoSuchMethodError'{0x00000000fcdc1e58}: java.lang.invoke.DirectMethodHandle$Holder.invokeSpecialIFC(Ljava/lang/Object;Ljava/lang/Object;I)I> (0x00000000fcdc1e58) thrown at [/export/home/tester/jenkins/workspace/zulu12-build-linux64
+Event: 2036.416 Thread 0x00007fda2c1ca800 Implicit null exception at 0x00007fda1c5052b5 to 0x00007fda1c505ac6
+Event: 2036.749 Thread 0x00007fda2c1ca800 Exception <a 'java/io/IOException'{0x00000000fcfa8bd8}> (0x00000000fcfa8bd8) thrown at [/export/home/tester/jenkins/workspace/zulu12-build-linux64/zulu-src/src/hotspot/share/prims/jni.cpp, line 615]
+
+Events (10 events):
+Event: 2036.807 Executing VM operation: RevokeBias
+Event: 2036.807 Executing VM operation: RevokeBias done
+Event: 2036.807 Executing VM operation: RevokeBias
+Event: 2036.807 Thread 0x00007fda2c1f5000 Thread exited: 0x00007fda2c1f5000
+Event: 2036.807 Executing VM operation: RevokeBias done
+Event: 2036.809 Executing VM operation: RevokeBias
+Event: 2036.809 Executing VM operation: RevokeBias done
+Event: 2036.885 loading class java/lang/invoke/BoundMethodHandle$Species_LLLLLLLLJ
+Event: 2036.914 loading class java/lang/invoke/BoundMethodHandle$Species_LLLLLLLLJ done
+Event: 2036.924 Thread 0x00007fd99c002000 Thread added: 0x00007fd99c002000
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 08:62 202058213                          /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/bin/java
+00600000-00601000 r--p 00000000 08:62 202058213                          /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/bin/java
+00601000-00602000 rw-p 00001000 08:62 202058213                          /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/bin/java
+01f8d000-01fae000 rw-p 00000000 00:00 0                                  [heap]
+fc000000-fd000000 rw-p 00000000 00:00 0 
+fd000000-ffe00000 ---p 00000000 00:00 0 
+ffe00000-ffe46000 rw-p 01187000 08:62 202135604                          /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/classes.jsa
+ffe46000-fff00000 rw-p 00000000 00:00 0 
+fff00000-fff72000 rw-p 01115000 08:62 202135604                          /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/classes.jsa
+fff72000-100000000 rw-p 00000000 00:00 0 
+800000000-800003000 rwxp 00001000 08:62 202135604                        /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/classes.jsa
+800003000-8003d3000 rw-p 00004000 08:62 202135604                        /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/classes.jsa
+8003d3000-800ad5000 r--p 003d4000 08:62 202135604                        /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/classes.jsa
+800ad5000-800ad6000 rw-p 00ad6000 08:62 202135604                        /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/classes.jsa
+800ad6000-801114000 r--p 00ad7000 08:62 202135604                        /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/classes.jsa
+801114000-8011d4000 rw-p 00000000 00:00 0 
+8011d4000-841114000 ---p 00000000 00:00 0 
+7fd968000000-7fd968021000 rw-p 00000000 00:00 0 
+7fd968021000-7fd96c000000 ---p 00000000 00:00 0 
+7fd970000000-7fd970021000 rw-p 00000000 00:00 0 
+7fd970021000-7fd974000000 ---p 00000000 00:00 0 
+7fd974000000-7fd974021000 rw-p 00000000 00:00 0 
+7fd974021000-7fd978000000 ---p 00000000 00:00 0 
+7fd978000000-7fd978021000 rw-p 00000000 00:00 0 
+7fd978021000-7fd97c000000 ---p 00000000 00:00 0 
+7fd97c000000-7fd97c021000 rw-p 00000000 00:00 0 
+7fd97c021000-7fd980000000 ---p 00000000 00:00 0 
+7fd980000000-7fd980021000 rw-p 00000000 00:00 0 
+7fd980021000-7fd984000000 ---p 00000000 00:00 0 
+7fd984000000-7fd984021000 rw-p 00000000 00:00 0 
+7fd984021000-7fd988000000 ---p 00000000 00:00 0 
+7fd988000000-7fd988021000 rw-p 00000000 00:00 0 
+7fd988021000-7fd98c000000 ---p 00000000 00:00 0 
+7fd98c000000-7fd98c021000 rw-p 00000000 00:00 0 
+7fd98c021000-7fd990000000 ---p 00000000 00:00 0 
+7fd990000000-7fd990021000 rw-p 00000000 00:00 0 
+7fd990021000-7fd994000000 ---p 00000000 00:00 0 
+7fd994000000-7fd994021000 rw-p 00000000 00:00 0 
+7fd994021000-7fd998000000 ---p 00000000 00:00 0 
+7fd998000000-7fd998021000 rw-p 00000000 00:00 0 
+7fd998021000-7fd99c000000 ---p 00000000 00:00 0 
+7fd99c000000-7fd99c021000 rw-p 00000000 00:00 0 
+7fd99c021000-7fd9a0000000 ---p 00000000 00:00 0 
+7fd9a0000000-7fd9a01e7000 rw-p 00000000 00:00 0 
+7fd9a01e7000-7fd9a4000000 ---p 00000000 00:00 0 
+7fd9a4000000-7fd9a40f8000 rw-p 00000000 00:00 0 
+7fd9a40f8000-7fd9a8000000 ---p 00000000 00:00 0 
+7fd9aaf53000-7fd9ab1f0000 rw-p 00000000 00:00 0 
+7fd9ab1f0000-7fd9ab1f4000 ---p 00000000 00:00 0 
+7fd9ab1f4000-7fd9ab2f1000 rw-p 00000000 00:00 0 
+7fd9ab2f1000-7fd9ab2f5000 ---p 00000000 00:00 0 
+7fd9ab2f5000-7fd9ab3f2000 rw-p 00000000 00:00 0 
+7fd9ab3f2000-7fd9ab3f3000 ---p 00000000 00:00 0 
+7fd9ab3f3000-7fd9ab4f4000 rw-p 00000000 00:00 0 
+7fd9ab4f4000-7fd9ab4f5000 ---p 00000000 00:00 0 
+7fd9ab4f5000-7fd9ab5f6000 rw-p 00000000 00:00 0 
+7fd9ab5f6000-7fd9ab5fa000 ---p 00000000 00:00 0 
+7fd9ab5fa000-7fd9ab6f7000 rw-p 00000000 00:00 0 
+7fd9ab6f7000-7fd9ab6fb000 ---p 00000000 00:00 0 
+7fd9ab6fb000-7fd9ab7f8000 rw-p 00000000 00:00 0 
+7fd9ab7f8000-7fd9ab7fc000 ---p 00000000 00:00 0 
+7fd9ab7fc000-7fd9ab8f9000 rw-p 00000000 00:00 0 
+7fd9ab8f9000-7fd9ab8fd000 ---p 00000000 00:00 0 
+7fd9ab8fd000-7fd9ab9fa000 rw-p 00000000 00:00 0 
+7fd9ab9fa000-7fd9ab9fe000 ---p 00000000 00:00 0 
+7fd9ab9fe000-7fd9abafb000 rw-p 00000000 00:00 0 
+7fd9abafb000-7fd9abaff000 ---p 00000000 00:00 0 
+7fd9abaff000-7fd9abbfc000 rw-p 00000000 00:00 0 
+7fd9abbfc000-7fd9abc00000 ---p 00000000 00:00 0 
+7fd9abc00000-7fd9abcfd000 rw-p 00000000 00:00 0 
+7fd9abcfd000-7fd9abd01000 ---p 00000000 00:00 0 
+7fd9abd01000-7fd9abdfe000 rw-p 00000000 00:00 0 
+7fd9abdfe000-7fd9abe02000 ---p 00000000 00:00 0 
+7fd9abe02000-7fd9abeff000 rw-p 00000000 00:00 0 
+7fd9abeff000-7fd9abf03000 ---p 00000000 00:00 0 
+7fd9abf03000-7fd9ac000000 rw-p 00000000 00:00 0 
+7fd9ac000000-7fd9ac021000 rw-p 00000000 00:00 0 
+7fd9ac021000-7fd9b0000000 ---p 00000000 00:00 0 
+7fd9b0000000-7fd9b008f000 rw-p 00000000 00:00 0 
+7fd9b008f000-7fd9b4000000 ---p 00000000 00:00 0 
+7fd9b4000000-7fd9b468f000 rw-p 00000000 00:00 0 
+7fd9b468f000-7fd9b8000000 ---p 00000000 00:00 0 
+7fd9b8000000-7fd9b8021000 rw-p 00000000 00:00 0 
+7fd9b8021000-7fd9bc000000 ---p 00000000 00:00 0 
+7fd9bc000000-7fd9bc021000 rw-p 00000000 00:00 0 
+7fd9bc021000-7fd9c0000000 ---p 00000000 00:00 0 
+7fd9c0000000-7fd9c017f000 rw-p 00000000 00:00 0 
+7fd9c017f000-7fd9c4000000 ---p 00000000 00:00 0 
+7fd9c4000000-7fd9c429b000 rw-p 00000000 00:00 0 
+7fd9c429b000-7fd9c8000000 ---p 00000000 00:00 0 
+7fd9c8000000-7fd9c8232000 rw-p 00000000 00:00 0 
+7fd9c8232000-7fd9cc000000 ---p 00000000 00:00 0 
+7fd9cc000000-7fd9cc021000 rw-p 00000000 00:00 0 
+7fd9cc021000-7fd9d0000000 ---p 00000000 00:00 0 
+7fd9d0000000-7fd9d0021000 rw-p 00000000 00:00 0 
+7fd9d0021000-7fd9d4000000 ---p 00000000 00:00 0 
+7fd9d4000000-7fd9d41cb000 rw-p 00000000 00:00 0 
+7fd9d41cb000-7fd9d8000000 ---p 00000000 00:00 0 
+7fd9d8000000-7fd9d8021000 rw-p 00000000 00:00 0 
+7fd9d8021000-7fd9dc000000 ---p 00000000 00:00 0 
+7fd9dc000000-7fd9dc2fc000 rw-p 00000000 00:00 0 
+7fd9dc2fc000-7fd9e0000000 ---p 00000000 00:00 0 
+7fd9e0000000-7fd9e0021000 rw-p 00000000 00:00 0 
+7fd9e0021000-7fd9e4000000 ---p 00000000 00:00 0 
+7fd9e4000000-7fd9e4021000 rw-p 00000000 00:00 0 
+7fd9e4021000-7fd9e8000000 ---p 00000000 00:00 0 
+7fd9e8000000-7fd9e8413000 rw-p 00000000 00:00 0 
+7fd9e8413000-7fd9ec000000 ---p 00000000 00:00 0 
+7fd9ec000000-7fd9ec021000 rw-p 00000000 00:00 0 
+7fd9ec021000-7fd9f0000000 ---p 00000000 00:00 0 
+7fd9f0000000-7fd9f0021000 rw-p 00000000 00:00 0 
+7fd9f0021000-7fd9f4000000 ---p 00000000 00:00 0 
+7fd9f4000000-7fd9f4021000 rw-p 00000000 00:00 0 
+7fd9f4021000-7fd9f8000000 ---p 00000000 00:00 0 
+7fd9f8000000-7fd9f8021000 rw-p 00000000 00:00 0 
+7fd9f8021000-7fd9fc000000 ---p 00000000 00:00 0 
+7fd9fc000000-7fd9fc021000 rw-p 00000000 00:00 0 
+7fd9fc021000-7fda00000000 ---p 00000000 00:00 0 
+7fda00052000-7fda00056000 ---p 00000000 00:00 0 
+7fda00056000-7fda00153000 rw-p 00000000 00:00 0 
+7fda00153000-7fda00154000 ---p 00000000 00:00 0 
+7fda00154000-7fda00255000 rw-p 00000000 00:00 0 
+7fda00255000-7fda00257000 r-xp 00000000 08:62 202058331                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libextnet.so
+7fda00257000-7fda00456000 ---p 00002000 08:62 202058331                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libextnet.so
+7fda00456000-7fda00457000 r--p 00001000 08:62 202058331                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libextnet.so
+7fda00457000-7fda00458000 rw-p 00002000 08:62 202058331                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libextnet.so
+7fda00458000-7fda0045c000 ---p 00000000 00:00 0 
+7fda0045c000-7fda00559000 rw-p 00000000 00:00 0 
+7fda00559000-7fda0055d000 ---p 00000000 00:00 0 
+7fda0055d000-7fda0065a000 rw-p 00000000 00:00 0 
+7fda0065a000-7fda0065e000 ---p 00000000 00:00 0 
+7fda0065e000-7fda0075b000 rw-p 00000000 00:00 0 
+7fda0075b000-7fda0075f000 ---p 00000000 00:00 0 
+7fda0075f000-7fda0085c000 rw-p 00000000 00:00 0 
+7fda0085c000-7fda00860000 ---p 00000000 00:00 0 
+7fda00860000-7fda0095d000 rw-p 00000000 00:00 0 
+7fda0095d000-7fda00961000 ---p 00000000 00:00 0 
+7fda00961000-7fda00a8f000 rw-p 00000000 00:00 0 
+7fda00a8f000-7fda00aa6000 r-xp 00000000 08:62 202058294                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libnet.so
+7fda00aa6000-7fda00ca5000 ---p 00017000 08:62 202058294                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libnet.so
+7fda00ca5000-7fda00ca6000 r--p 00016000 08:62 202058294                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libnet.so
+7fda00ca6000-7fda00ca7000 rw-p 00017000 08:62 202058294                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libnet.so
+7fda00ca7000-7fda00cb8000 r-xp 00000000 08:62 202058305                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libnio.so
+7fda00cb8000-7fda00eb7000 ---p 00011000 08:62 202058305                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libnio.so
+7fda00eb7000-7fda00eb8000 r--p 00010000 08:62 202058305                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libnio.so
+7fda00eb8000-7fda00eb9000 rw-p 00011000 08:62 202058305                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libnio.so
+7fda00eb9000-7fda00eba000 ---p 00000000 00:00 0 
+7fda00eba000-7fda00fbb000 rw-p 00000000 00:00 0 
+7fda00fbb000-7fda00fbf000 ---p 00000000 00:00 0 
+7fda00fbf000-7fda010bc000 rw-p 00000000 00:00 0 
+7fda010bc000-7fda010c0000 ---p 00000000 00:00 0 
+7fda010c0000-7fda011bd000 rw-p 00000000 00:00 0 
+7fda011bd000-7fda011c1000 ---p 00000000 00:00 0 
+7fda011c1000-7fda012be000 rw-p 00000000 00:00 0 
+7fda012be000-7fda012c2000 ---p 00000000 00:00 0 
+7fda012c2000-7fda013bf000 rw-p 00000000 00:00 0 
+7fda013bf000-7fda013c3000 ---p 00000000 00:00 0 
+7fda013c3000-7fda014c0000 rw-p 00000000 00:00 0 
+7fda014c0000-7fda014c4000 ---p 00000000 00:00 0 
+7fda014c4000-7fda015c1000 rw-p 00000000 00:00 0 
+7fda015c1000-7fda015c5000 ---p 00000000 00:00 0 
+7fda015c5000-7fda016c2000 rw-p 00000000 00:00 0 
+7fda016c2000-7fda0185d000 r--p 00000000 08:62 243799929                  /usr/lib/locale/locale-archive
+7fda0185d000-7fda01861000 ---p 00000000 00:00 0 
+7fda01861000-7fda0195e000 rw-p 00000000 00:00 0 
+7fda0195e000-7fda01962000 ---p 00000000 00:00 0 
+7fda01962000-7fda01a5f000 rw-p 00000000 00:00 0 
+7fda01a5f000-7fda01a60000 ---p 00000000 00:00 0 
+7fda01a60000-7fda020e2000 rw-p 00000000 00:00 0 
+7fda020e2000-7fda023e2000 ---p 00000000 00:00 0 
+7fda023e2000-7fda023e3000 ---p 00000000 00:00 0 
+7fda023e3000-7fda024e4000 rw-p 00000000 00:00 0 
+7fda024e4000-7fda024e5000 ---p 00000000 00:00 0 
+7fda024e5000-7fda04000000 rw-p 00000000 00:00 0 
+7fda04000000-7fda04021000 rw-p 00000000 00:00 0 
+7fda04021000-7fda08000000 ---p 00000000 00:00 0 
+7fda08000000-7fda08021000 rw-p 00000000 00:00 0 
+7fda08021000-7fda0c000000 ---p 00000000 00:00 0 
+7fda0c000000-7fda0c021000 rw-p 00000000 00:00 0 
+7fda0c021000-7fda10000000 ---p 00000000 00:00 0 
+7fda10026000-7fda12c8d000 rw-p 00000000 00:00 0 
+7fda12c8d000-7fda12c8e000 ---p 00000000 00:00 0 
+7fda12c8e000-7fda12d8f000 rw-p 00000000 00:00 0 
+7fda12d8f000-7fda12d90000 ---p 00000000 00:00 0 
+7fda12d90000-7fda12e91000 rw-p 00000000 00:00 0 
+7fda12e91000-7fda12e92000 ---p 00000000 00:00 0 
+7fda12e92000-7fda12fd3000 rw-p 00000000 00:00 0 
+7fda12fd3000-7fda1308b000 ---p 00000000 00:00 0 
+7fda1308b000-7fda130d3000 rw-p 00000000 00:00 0 
+7fda130d3000-7fda1318b000 ---p 00000000 00:00 0 
+7fda1318b000-7fda148aa000 rw-p 00000000 00:00 0 
+7fda148aa000-7fda14c0a000 rwxp 00000000 00:00 0 
+7fda14c0a000-7fda15078000 ---p 00000000 00:00 0 
+7fda15078000-7fda152e8000 rwxp 00000000 00:00 0 
+7fda152e8000-7fda1c491000 ---p 00000000 00:00 0 
+7fda1c491000-7fda1c701000 rwxp 00000000 00:00 0 
+7fda1c701000-7fda238aa000 ---p 00000000 00:00 0 
+7fda238aa000-7fda2c000000 r--s 00000000 08:62 202058286                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/modules
+7fda2c000000-7fda2c22b000 rw-p 00000000 00:00 0 
+7fda2c22b000-7fda30000000 ---p 00000000 00:00 0 
+7fda30017000-7fda30f6c000 rw-p 00000000 00:00 0 
+7fda30f6c000-7fda31050000 ---p 00000000 00:00 0 
+7fda31050000-7fda31055000 rw-p 00000000 00:00 0 
+7fda31055000-7fda31139000 ---p 00000000 00:00 0 
+7fda31139000-7fda31154000 r-xp 00000000 08:62 202058295                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjimage.so
+7fda31154000-7fda31354000 ---p 0001b000 08:62 202058295                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjimage.so
+7fda31354000-7fda31356000 r--p 0001b000 08:62 202058295                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjimage.so
+7fda31356000-7fda31357000 rw-p 0001d000 08:62 202058295                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjimage.so
+7fda31357000-7fda3135e000 r-xp 00000000 08:62 202058325                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libzip.so
+7fda3135e000-7fda3155d000 ---p 00007000 08:62 202058325                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libzip.so
+7fda3155d000-7fda3155e000 r--p 00006000 08:62 202058325                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libzip.so
+7fda3155e000-7fda3155f000 rw-p 00007000 08:62 202058325                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libzip.so
+7fda3155f000-7fda3156a000 r-xp 00000000 08:62 128194488                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7fda3156a000-7fda31769000 ---p 0000b000 08:62 128194488                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7fda31769000-7fda3176a000 r--p 0000a000 08:62 128194488                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7fda3176a000-7fda3176b000 rw-p 0000b000 08:62 128194488                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7fda3176b000-7fda31771000 rw-p 00000000 00:00 0 
+7fda31771000-7fda31788000 r-xp 00000000 08:62 128194473                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7fda31788000-7fda31987000 ---p 00017000 08:62 128194473                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7fda31987000-7fda31988000 r--p 00016000 08:62 128194473                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7fda31988000-7fda31989000 rw-p 00017000 08:62 128194473                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7fda31989000-7fda3198b000 rw-p 00000000 00:00 0 
+7fda3198b000-7fda31996000 r-xp 00000000 08:62 128194490                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7fda31996000-7fda31b95000 ---p 0000b000 08:62 128194490                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7fda31b95000-7fda31b96000 r--p 0000a000 08:62 128194490                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7fda31b96000-7fda31b97000 rw-p 0000b000 08:62 128194490                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7fda31b97000-7fda31b9f000 r-xp 00000000 08:62 128194474                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7fda31b9f000-7fda31d9f000 ---p 00008000 08:62 128194474                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7fda31d9f000-7fda31da0000 r--p 00008000 08:62 128194474                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7fda31da0000-7fda31da1000 rw-p 00009000 08:62 128194474                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7fda31da1000-7fda31dc9000 r-xp 00000000 08:62 202058285                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjava.so
+7fda31dc9000-7fda31fc8000 ---p 00028000 08:62 202058285                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjava.so
+7fda31fc8000-7fda31fc9000 r--p 00027000 08:62 202058285                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjava.so
+7fda31fc9000-7fda31fcb000 rw-p 00028000 08:62 202058285                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjava.so
+7fda31fcb000-7fda31fd8000 r-xp 00000000 08:62 202058292                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libverify.so
+7fda31fd8000-7fda321d7000 ---p 0000d000 08:62 202058292                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libverify.so
+7fda321d7000-7fda321d9000 r--p 0000c000 08:62 202058292                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libverify.so
+7fda321d9000-7fda321da000 rw-p 0000e000 08:62 202058292                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libverify.so
+7fda321da000-7fda321e1000 r-xp 00000000 08:62 128194495                  /lib/x86_64-linux-gnu/librt-2.27.so
+7fda321e1000-7fda323e0000 ---p 00007000 08:62 128194495                  /lib/x86_64-linux-gnu/librt-2.27.so
+7fda323e0000-7fda323e1000 r--p 00006000 08:62 128194495                  /lib/x86_64-linux-gnu/librt-2.27.so
+7fda323e1000-7fda323e2000 rw-p 00007000 08:62 128194495                  /lib/x86_64-linux-gnu/librt-2.27.so
+7fda323e2000-7fda3257f000 r-xp 00000000 08:62 128191333                  /lib/x86_64-linux-gnu/libm-2.27.so
+7fda3257f000-7fda3277e000 ---p 0019d000 08:62 128191333                  /lib/x86_64-linux-gnu/libm-2.27.so
+7fda3277e000-7fda3277f000 r--p 0019c000 08:62 128191333                  /lib/x86_64-linux-gnu/libm-2.27.so
+7fda3277f000-7fda32780000 rw-p 0019d000 08:62 128191333                  /lib/x86_64-linux-gnu/libm-2.27.so
+7fda32780000-7fda33a38000 r-xp 00000000 08:62 202135605                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/libjvm.so
+7fda33a38000-7fda33c38000 ---p 012b8000 08:62 202135605                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/libjvm.so
+7fda33c38000-7fda33cfd000 r--p 012b8000 08:62 202135605                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/libjvm.so
+7fda33cfd000-7fda33d38000 rw-p 0137d000 08:62 202135605                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/libjvm.so
+7fda33d38000-7fda33dbb000 rw-p 00000000 00:00 0 
+7fda33dbb000-7fda33fa2000 r-xp 00000000 08:62 128188780                  /lib/x86_64-linux-gnu/libc-2.27.so
+7fda33fa2000-7fda341a2000 ---p 001e7000 08:62 128188780                  /lib/x86_64-linux-gnu/libc-2.27.so
+7fda341a2000-7fda341a6000 r--p 001e7000 08:62 128188780                  /lib/x86_64-linux-gnu/libc-2.27.so
+7fda341a6000-7fda341a8000 rw-p 001eb000 08:62 128188780                  /lib/x86_64-linux-gnu/libc-2.27.so
+7fda341a8000-7fda341ac000 rw-p 00000000 00:00 0 
+7fda341ac000-7fda341af000 r-xp 00000000 08:62 128188864                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7fda341af000-7fda343ae000 ---p 00003000 08:62 128188864                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7fda343ae000-7fda343af000 r--p 00002000 08:62 128188864                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7fda343af000-7fda343b0000 rw-p 00003000 08:62 128188864                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7fda343b0000-7fda343ca000 r-xp 00000000 08:62 128194493                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7fda343ca000-7fda345c9000 ---p 0001a000 08:62 128194493                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7fda345c9000-7fda345ca000 r--p 00019000 08:62 128194493                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7fda345ca000-7fda345cb000 rw-p 0001a000 08:62 128194493                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7fda345cb000-7fda345cf000 rw-p 00000000 00:00 0 
+7fda345cf000-7fda345df000 r-xp 00000000 08:62 202058299                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjli.so
+7fda345df000-7fda347de000 ---p 00010000 08:62 202058299                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjli.so
+7fda347de000-7fda347df000 r--p 0000f000 08:62 202058299                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjli.so
+7fda347df000-7fda347e0000 rw-p 00010000 08:62 202058299                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjli.so
+7fda347e0000-7fda347fc000 r-xp 00000000 08:62 128193260                  /lib/x86_64-linux-gnu/libz.so.1.2.11
+7fda347fc000-7fda349fb000 ---p 0001c000 08:62 128193260                  /lib/x86_64-linux-gnu/libz.so.1.2.11
+7fda349fb000-7fda349fc000 r--p 0001b000 08:62 128193260                  /lib/x86_64-linux-gnu/libz.so.1.2.11
+7fda349fc000-7fda349fd000 rw-p 0001c000 08:62 128193260                  /lib/x86_64-linux-gnu/libz.so.1.2.11
+7fda349fd000-7fda34a24000 r-xp 00000000 08:62 128188653                  /lib/x86_64-linux-gnu/ld-2.27.so
+7fda34a2d000-7fda34aa8000 rw-p 00000000 00:00 0 
+7fda34aa8000-7fda34abf000 ---p 00000000 00:00 0 
+7fda34abf000-7fda34ac8000 rw-p 00000000 00:00 0 
+7fda34ac8000-7fda34adf000 ---p 00000000 00:00 0 
+7fda34adf000-7fda34ae8000 rw-p 00000000 00:00 0 
+7fda34ae8000-7fda34aff000 ---p 00000000 00:00 0 
+7fda34aff000-7fda34b00000 rw-p 00000000 00:00 0 
+7fda34b00000-7fda34b04000 ---p 00000000 00:00 0 
+7fda34b04000-7fda34c06000 rw-p 00000000 00:00 0 
+7fda34c07000-7fda34c0e000 rw-p 00000000 00:00 0 
+7fda34c0e000-7fda34c17000 ---p 00000000 00:00 0 
+7fda34c17000-7fda34c1f000 rw-s 00000000 08:62 133432375                  /tmp/hsperfdata_cbartels/13470
+7fda34c1f000-7fda34c20000 ---p 00000000 00:00 0 
+7fda34c20000-7fda34c21000 r--p 00000000 00:00 0 
+7fda34c21000-7fda34c22000 ---p 00000000 00:00 0 
+7fda34c22000-7fda34c24000 rw-p 00000000 00:00 0 
+7fda34c24000-7fda34c25000 r--p 00027000 08:62 128188653                  /lib/x86_64-linux-gnu/ld-2.27.so
+7fda34c25000-7fda34c26000 rw-p 00028000 08:62 128188653                  /lib/x86_64-linux-gnu/ld-2.27.so
+7fda34c26000-7fda34c27000 rw-p 00000000 00:00 0 
+7ffd4e5d1000-7ffd4e5f5000 rw-p 00000000 00:00 0                          [stack]
+7ffd4e5f7000-7ffd4e5fa000 r--p 00000000 00:00 0                          [vvar]
+7ffd4e5fa000-7ffd4e5fc000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+
+VM Arguments:
+jvm_args: -Xms16M -Xmx64M --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED 
+java_command: alien.JSh
+java_class_path (initial): /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JAliEn/ed27642853-1/lib/alien-users.jar
+Launcher Type: SUN_STANDARD
+
+[Global flags]
+     intx CICompilerCount                          = 15                                        {product} {ergonomic}
+     uint ConcGCThreads                            = 10                                        {product} {ergonomic}
+     uint G1ConcRefinementThreads                  = 38                                        {product} {ergonomic}
+   size_t G1HeapRegionSize                         = 1048576                                   {product} {ergonomic}
+    uintx GCDrainStackTargetSize                   = 64                                        {product} {ergonomic}
+   size_t InitialHeapSize                          = 16777216                                  {product} {command line}
+   size_t MarkStackSize                            = 4194304                                   {product} {ergonomic}
+   size_t MaxHeapSize                              = 67108864                                  {product} {command line}
+   size_t MaxNewSize                               = 39845888                                  {product} {ergonomic}
+   size_t MinHeapDeltaBytes                        = 1048576                                   {product} {ergonomic}
+    uintx NonNMethodCodeHeapSize                   = 8182140                                {pd product} {ergonomic}
+    uintx NonProfiledCodeHeapSize                  = 121738050                              {pd product} {ergonomic}
+    uintx ProfiledCodeHeapSize                     = 121738050                              {pd product} {ergonomic}
+    uintx ReservedCodeCacheSize                    = 251658240                              {pd product} {ergonomic}
+     bool SegmentedCodeCache                       = true                                      {product} {ergonomic}
+     bool UseCompressedClassPointers               = true                                 {lp64_product} {ergonomic}
+     bool UseCompressedOops                        = true                                 {lp64_product} {ergonomic}
+     bool UseG1GC                                  = true                                      {product} {ergonomic}
+
+Logging:
+Log output configuration:
+ #0: stdout all=warning uptime,level,tags
+ #1: stderr all=off uptime,level,tags
+
+Environment Variables:
+JAVA_HOME=/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1
+CLASSPATH=/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JAliEn/ed27642853-1/lib/alien-users.jar
+PATH=/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JAliEn/ed27642853-1/bin:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/Python-modules/1.0-1/share/python-modules/bin:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/XRootD/v4.12.1-1/bin:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/AliEn-Runtime/v2-19-le-1/bin:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/OpenSSL/v1.0.2o-1/bin:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/bin:/home/cbartels/.local/bin:/home/pyadmin/root_cern/bin:/home/cbartels/.virtualenvs/ml/bin:/opt/xrdclient/current/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+LD_LIBRARY_PATH=/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/Python-modules/1.0-1/share/python-modules/lib:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/XRootD/v4.12.1-1/lib:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/AliEn-Runtime/v2-19-le-1/lib:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/OpenSSL/v1.0.2o-1/lib:/home/pyadmin/RooUnfold:/home/pyadmin/root_cern/lib:/opt/xrdclient/current/lib:
+SHELL=/bin/bash
+LIBPATH=/home/pyadmin/root_cern/lib
+DYLD_LIBRARY_PATH=/home/pyadmin/root_cern/lib
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xf75390], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xf75390], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0xf75390], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0xc22db0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0xc22db0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0xf75390], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR2: [libjvm.so+0xc22c50], sa_mask[0]=00000000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: [libjvm.so+0xc22fb0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGINT: SIG_IGN, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGTERM: [libjvm.so+0xc22fb0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGQUIT: [libjvm.so+0xc22fb0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+
+
+---------------  S Y S T E M  ---------------
+
+OS:DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION="Ubuntu 18.04.5 LTS"
+uname:Linux 4.15.0-136-generic #140-Ubuntu SMP Thu Jan 28 05:20:47 UTC 2021 x86_64
+libc:glibc 2.27 NPTL 2.27 
+rlimit: STACK 8192k, CORE 0k, NPROC 1544711, NOFILE 1048576, AS infinity, DATA infinity, FSIZE infinity
+load average:284.05 182.65 99.69
+
+/proc/meminfo:
+MemTotal:       395903312 kB
+MemFree:          528892 kB
+MemAvailable:          0 kB
+Buffers:            6488 kB
+Cached:         55152644 kB
+SwapCached:            0 kB
+Active:         361047392 kB
+Inactive:       30301672 kB
+Active(anon):   361027456 kB
+Inactive(anon): 30271924 kB
+Active(file):      19936 kB
+Inactive(file):    29748 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:                 0 kB
+Writeback:           976 kB
+AnonPages:      336179004 kB
+Mapped:            76376 kB
+Shmem:          55085200 kB
+Slab:            1412696 kB
+SReclaimable:     636888 kB
+SUnreclaim:       775808 kB
+KernelStack:       36912 kB
+PageTables:       792596 kB
+NFS_Unstable:         48 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    197951656 kB
+Committed_AS:   823928176 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:   1036288 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:    34551324 kB
+DirectMap2M:    331042816 kB
+DirectMap1G:    36700160 kB
+
+
+/proc/sys/kernel/threads-max (system-wide limit on the number of threads):
+3089423
+
+
+/proc/sys/vm/max_map_count (maximum number of memory map areas a process may have):
+65530
+
+
+/proc/sys/kernel/pid_max (system-wide limit on number of process identifiers):
+57344
+
+
+
+container (cgroup) information:
+container_type: cgroupv1
+cpu_cpuset_cpus: 0-55
+cpu_memory_nodes: 0-3
+active_processor_count: 56
+cpu_quota: -1
+cpu_period: 100000
+cpu_shares: -1
+memory_limit_in_bytes: -1
+memory_and_swap_limit_in_bytes: -2
+memory_soft_limit_in_bytes: -1
+memory_usage_in_bytes: 401399767040
+memory_max_usage_in_bytes: 401811824640
+
+
+CPU:total 56 (initial active 56) (14 cores per cpu, 2 threads per core) family 6 model 85 stepping 4, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, rtm, 3dnowpref, lzcnt, ht, tsc, tscinvbit, bmi1, bmi2, adx, evex, fma
+CPU Model and flags from /proc/cpuinfo:
+model name	: Intel(R) Xeon(R) Gold 6132 CPU @ 2.60GHz
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb cat_l3 cdp_l3 invpcid_single pti intel_ppin ssbd mba ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm mpx rdt_a avx512f avx512dq rdseed adx smap clflushopt clwb intel_pt avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local dtherm ida arat pln pts pku ospke md_clear flush_l1d
+
+Memory: 4k page, physical 395903312k(549440k free), swap 0k(0k free)
+
+vm_info: OpenJDK 64-Bit Server VM (12.0.1+12) for linux-amd64 JRE (Zulu12.2+3-CA) (12.0.1+12), built on Apr 10 2019 13:13:34 by "zulu_re" with gcc 7.3.1 20180303 (Red Hat 7.3.1-5)
+
+END.

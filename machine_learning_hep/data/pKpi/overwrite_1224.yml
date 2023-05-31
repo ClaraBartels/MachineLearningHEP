@@ -9,22 +9,53 @@ sel_skim_binmax: [24] #list of nbins
 
 multi:
     data:
-      fracmerge : [1,1] #list of periods
+      fracmerge : [0.2,0.2] #list of periods
 
-      pkl_skimmed_merge_for_ml: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20200810_ROOT6-1/PbPb_2018_data/482_20200811-1234/pkl_ML_1224,
-                                 /mnt/temp/TTreeLctopKpiPbPb/vAN-20200810_ROOT6-1/PbPb_2018_data/481_20200811-1234/pkl_ML_1224] #list of periods
-      pkl_skimmed_merge_for_ml_all: /mnt/temp/TTreeLctopKpiPbPb/pkl_ML_data_all_010_new_1224
-      pkl_evtcounter_all: /mnt/temp/TTreeLctopKpiPbPb/pkl_evt_data_all_010_1224
+      pkl_skimmed_merge_for_ml: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20211110_ROOT6-1/PbPb_data/717_20221007-1630/child_2/pkl_ML_1224,
+                                 /mnt/temp/TTreeLctopKpiPbPb/vAN-20211110_ROOT6-1/PbPb_data/717_20221007-1630/child_1/pkl_ML_1224] #list of periods
+      pkl_skimmed_merge_for_ml_all: /data/TTree/LcPbPbpKpi/pkl_ML_data_all_3050_pass3_PIDvariation_1224
+      pkl_evtcounter_all: /data/TTree/LcPbPbpKpi/pkl_evt_data_all_3050_pass3_PIDvariation_1224
 
 ml:
+  nbkg: 500000
+  nsig: 75000
   binmin: [12] #list of nbins sel_skim_binmin bins
   binmax: [24] #list of nbins sel_skim_binmin bins
-  mlplot: /mnt/temp/OngoingAnalysis_LctopKpiPbPb/010/mlplot_1224 # to be removed
-  mlout: /mnt/temp/OngoingAnalysis_LctopKpiPbPb/010/mlout_1224 # to be removed
+  mlplot: /home/cbartels/Output/3050_pass3_bayes/mlplot3050_1224 # to be removed
+  mlout: /home/cbartels/Output/3050_pass3_bayes/mlout3050_1224 # to be removed
+
+
+mlapplication:
+  data:
+      pkl_skimmed_dec: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20211110_ROOT6-1/PbPb_data/717_20221007-1630/child_2/pklskdec_1224,
+                          /mnt/temp/TTreeLctopKpiPbPb/vAN-20211110_ROOT6-1/PbPb_data/717_20221007-1630/child_1/pklskdec_1224] #list of periods
+      pkl_skimmed_decmerged: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20211110_ROOT6-1/PbPb_data/717_20221007-1630/child_2/pklskdecmerged_1224,
+                          /mnt/temp/TTreeLctopKpiPbPb/vAN-20211110_ROOT6-1/PbPb_data/717_20221007-1630/child_1/pklskdecmerged_1224] #list of periods
+  mc:
+
+      pkl_skimmed_dec: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20211110_ROOT6-1/PbPb_sim/715_20221010-1109/child_2/pklskdec_1224,
+                        /mnt/temp/TTreeLctopKpiPbPb/vAN-20211110_ROOT6-1/PbPb_sim/715_20221010-1109/child_1/pklskdec_1224] #list of periods
+      pkl_skimmed_decmerged: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20211110_ROOT6-1/PbPb_sim/715_20221010-1109/child_2/pklskdecmerged_1224,
+                              /mnt/temp/TTreeLctopKpiPbPb/vAN-20211110_ROOT6-1/PbPb_sim/715_20221010-1109/child_1/pklskdecmerged_1224] #list of periods
+
+  modelsperptbin: [xgboost_classifierLcpKpi_dfselection_pt_cand_12.0_24.0.sav]
+
+  probcutpresel:
+    data: [0.3] #list of nbins  sel_skim_binmin bins
+    mc: [0.3] #list of nbins  sel_skim_binmin bins
+  probcutoptimal: [0.3] #list of nbins  sel_skim_binmin bins
 
 analysis:
   MBvspt:
     sel_an_binmin: [12] #list of pt nbins
     sel_an_binmax: [24] #list of pt nbins
+    data:
+      runselection: [null, null]
+      results: [/home/cbartels/Output/3050_pass3_bayes/1224/Application/LHC18r, /home/cbartels/Output/3050_pass3_bayes/1224/Application/LHC18q]
+      resultsallp: /home/cbartels/Output/3050_pass3_bayes/1224/Application/LHC18qr
+    mc:
+      runselection: [null, null]
+      results: [/home/cbartels/Output/3050_pass3_bayes/1224/Application/LHC19c1b_all_r,/home/cbartels/Output/3050_pass3_bayes/1224/Application/LHC19c1b_all_q] #list of periods
+      resultsallp: /home/cbartels/Output/3050_pass3_bayes/1224/Application/LHC19c1b_qr
 
 

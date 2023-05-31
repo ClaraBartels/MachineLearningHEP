@@ -33,7 +33,7 @@ from machine_learning_hep.fitting.utils import construct_rebinning
 
 
 
-# single or double Gaussian
+# single or Double Gaussian
 TYPE_GAUSS_1 = "kGaus"
 TYPE_GAUSS_2 = "k2Gaus"
 
@@ -459,15 +459,44 @@ class FitAliHF(FitROOT):
 
         y_plot_max = self.histo.GetMaximum()
         y_plot_min = self.histo.GetMinimum()
+        NEntries = self.histo.GetEntries()
+        NEntries = int(NEntries)
+        y_plot_min = y_plot_max
+        for i in range(NEntries):
+            #print(i)
+            value = self.histo.GetBinContent(i)
+            #print(value)
+            if value == 0.0:
+                continue
+            if value < y_plot_min:
+                y_plot_min = value
+        print("range1 ")
+        print(y_plot_min)
+        print(y_plot_max)
+        print("xrange:")
+        print(self.histo.GetXaxis().GetXmax())
         for i in range(1, self.histo.GetNbinsX() + 1):
+            if self.histo.GetBinContent(i) == 0.0:
+                continue
+            #print(self.histo.GetBinContent(i) - self.histo.GetBinError(i))
+            #print("err")
+            #print(self.histo.GetBinError(i))
             y_max_tmp = self.histo.GetBinContent(i) + self.histo.GetBinError(i)
             y_min_tmp = self.histo.GetBinContent(i) - self.histo.GetBinError(i)
             y_plot_max = max(y_plot_max, y_max_tmp)
             y_plot_min = min(y_plot_min, y_min_tmp)
 
-        for do in draw_objects:
-            y_plot_max = max(y_plot_max, do.GetMaximum())
-            y_plot_min = min(y_plot_min, do.GetMinimum())
+        print("range1.5")
+        print(y_plot_min)
+        print(y_plot_max)
+
+        #for do in draw_objects:
+        #    y_plot_max = max(y_plot_max, do.GetMaximum())
+        #    y_plot_min = min(y_plot_min, do.GetMinimum())
+
+        print("range2")
+        print(y_plot_min)
+        print(y_plot_max)
         # Leave some space for putting info
         y_rel_plot_range = 0.6
         y_rel_header_range = 0.3
@@ -476,6 +505,11 @@ class FitAliHF(FitROOT):
         y_full_range = (y_plot_max - y_plot_min) / y_rel_plot_range
         y_min = y_plot_min - y_rel_footer_range * y_full_range
         y_max = y_plot_max + y_rel_header_range * y_full_range
+        print("range:")
+        print(y_min)
+        print(y_max)
+        #y_min = 4000
+        #y_max = 5000
 
         root_pad.SetLeftMargin(0.12)
         frame = root_pad.cd().DrawFrame(self.init_pars["fit_range_low"], y_min,
@@ -732,7 +766,7 @@ class FitROOTGauss(FitROOT): # pylint: disable=too-many-instance-attributes
 
         root_pad.cd()
 
-        # Better to see double Gaussian
+        # Better to see Double Gaussian
         root_pad.SetLogy()
 
         draw_objects = [self.histo, self.kernel]

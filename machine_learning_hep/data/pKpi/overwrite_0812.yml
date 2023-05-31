@@ -1,0 +1,63 @@
+#
+#overwrite for 8 to 12 GeV to increase background fraction
+#
+
+sel_reco_skim: ["pt_prong0>0.40 and pt_prong1>0.40 and pt_prong2>0.40"]
+
+sel_skim_binmin: [8] #list of nbins
+sel_skim_binmax: [12] #list of nbins
+
+
+multi:
+    data:
+      fracmerge : [0.02,0.02] #list of periods
+
+      pkl_skimmed_merge_for_ml: [/data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_data/647_20211123-1105/child_2/pkl_ML_0812,
+                                 /data/TTree/LcPbPbpKpi/vAN-20211110_ROOT6-1/PbPb_data/647_20211123-1105/child_1/pkl_ML_0812] #list of periods
+      pkl_skimmed_merge_for_ml_all:  /mnt/temp/TTreeLctopKpiPbPb/pkl_ML_data_all_3050_pass3_bayes_0812
+      pkl_evtcounter_all: /mnt/temp/TTreeLctopKpiPbPb/pkl_evt_data_all_3050_pass3_bayes_0812
+
+
+
+
+ml:
+  binmin: [8] #list of nbins sel_skim_binmin bins
+  binmax: [12] #list of nbins sel_skim_binmin bins
+  mlplot: /mnt/temp/OngoingAnalyses_LctopKpiPbPb/3050_pass3/mlplot3050_0812_bayesian # to be removed
+  mlout: /mnt/temp/OngoingAnalyses_LctopKpiPbPb/3050_pass3/mlout3050_0812_bayesian # to be removed
+
+#following directories are old and deprecated
+mlapplication:
+  data:
+      pkl_skimmed_dec: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20210221_ROOT6-1/PbPb_data/589_20210223-1101/child_2/pklsdec_0812,
+                          /mnt/temp/TTreeLctopKpiPbPb/vAN-20210221_ROOT6-1/PbPb_data/589_20210223-1101/child_1/pklskdec_0812] #list of periods
+      pkl_skimmed_decmerged: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20210221_ROOT6-1/PbPb_data/589_20210223-1101/child_2/pklskdecmerged_0812,
+                          /mnt/temp/TTreeLctopKpiPbPb/vAN-20210221_ROOT6-1/PbPb_data/589_20210223-1101/child_1/pklskdecmerged_0812] #list of periods
+  mc:
+
+      pkl_skimmed_dec: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20210301_ROOT6-1/PbPb_sim/600_20210302-1557/child_2/pklskdec_0812,
+                        /mnt/temp/TTreeLctopKpiPbPb/vAN-20210301_ROOT6-1/PbPb_sim/600_20210302-1557/child_1/pklskdec_0812] #list of periods
+      pkl_skimmed_decmerged: [/mnt/temp/TTreeLctopKpiPbPb/vAN-20210301_ROOT6-1/PbPb_sim/600_20210302-1557/child_2//pklskdecmerged_0812,
+                              /mnt/temp/TTreeLctopKpiPbPb/vAN-20210301_ROOT6-1/PbPb_sim/600_20210302-1557/child_1/pklskdecmerged_0812] #list of periods
+
+  modelsperptbin: [xgboost_classifierLcpKpi_dfselection_pt_cand_8.0_12.0.sav]
+
+  probcutpresel:
+    data: [0.5] #list of nbins  sel_skim_binmin bins
+    mc: [0.5] #list of nbins  sel_skim_binmin bins
+  probcutoptimal: [0.90] #list of nbins  sel_skim_binmin bins
+
+analysis:
+  MBvspt:
+    sel_an_binmin: [8] #list of pt nbins
+    sel_an_binmax: [12] #list of pt nbins
+    data:
+      runselection: [null, null]
+      results: ['/home/cbartels/Output/3050_pass3_new/0812/LHC18r','/home/cbartels/Output/3050_pass3_new/0812/LHC18q'] #list of periods
+      resultsallp: '/home/cbartels/Output/3050_pass3_new/0812/LHC18qr'
+    mc:
+      runselection: [null, null]
+      results: ['/home/cbartels/Output/3050_pass3_new/0812/LHC19c3a_all_r', '/home/cbartels/Output/3050_pass3_new/0812/LHC19c3a_all_q'] #list of periods
+      resultsallp: '/home/cbartels/Output/3050_pass3_new/0812/LHC10c3a_qr'
+
+

@@ -20,7 +20,7 @@ mergingperiods:
   mc:
     activate: false
   data:
-    activate: false
+    activate: true
 
 ml_study:
   activate: false
@@ -59,21 +59,21 @@ analysis:
   # Do only merged (false)
   doperperiod: true
   data:
-    histomass: true
+    histomass: false
     dojetsystematics: false
   mc:
-    histomass: true
-    efficiency: true # processer: process_efficiency
+    histomass: false
+    efficiency: false # processer: process_efficiency
     response: false # processer: process_response
-    feeddown: true
+    feeddown: false
     dounfolding: false
-  dofit: true
+  dofit: false
   # Control the yield systematic uncertainty
   dosyst: false
   dojetstudies: false
-  doeff: true
-  docross: true
-  doplots: true
+  doeff: false
+  docross: false
+  doplots: false
   doplotsval: false # analyzer: plottervalidation
 
 systematics:

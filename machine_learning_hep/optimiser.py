@@ -90,6 +90,8 @@ class Optimiser: # pylint: disable=too-many-public-methods
         self.f_evt_mc = os.path.join(dirmcml, self.n_evt)
         self.f_reco_data = os.path.join(dirdataml, self.n_reco)
         self.f_evt_count_ml = os.path.join(dirdataml, self.n_evt_count_ml)
+        print("HERE")
+        print(self.f_evt_count_ml)
         self.f_reco_applieddata = os.path.join(self.dirmlout, self.n_reco_applieddata)
         self.f_reco_appliedmc = os.path.join(self.dirmlout, self.n_reco_appliedmc)
         #variables
@@ -243,8 +245,10 @@ class Optimiser: # pylint: disable=too-many-public-methods
 
         filename_train = \
                 os.path.join(self.dirmlout, f"df_train_{self.p_binmin}_{self.p_binmax}.pkl")
+        #filename_test = \
+        #        os.path.join(self.dirmlout, f"df_test_{self.p_binmin}_{self.p_binmax}.pkl")
         filename_test = \
-                os.path.join(self.dirmlout, f"df_test_{self.p_binmin}_{self.p_binmax}.pkl")
+                os.path.join(self.dirmlout, f"testsample_LcpKpi_dfselection_pt_cand_{self.p_binmin}.0_{self.p_binmax}.0_mldecision.pkl")
 
         if os.path.exists(filename_train) \
                 and os.path.exists(filename_test) \
@@ -410,6 +414,7 @@ class Optimiser: # pylint: disable=too-many-public-methods
                                                             len(self.df_xtrain.columns))
         self.p_class = classifiers_scikit+classifiers_xgboost+classifiers_keras
         self.p_classname = names_scikit+names_xgboost+names_keras
+
 
         # Try to read trained models
         clfs = readmodels(self.p_classname, self.dirmlout, self.s_suffix)
@@ -648,15 +653,20 @@ class Optimiser: # pylint: disable=too-many-public-methods
         count_dict = parse_yaml(self.f_evt_count_ml)
         self.p_nevttot = count_dict["evtorig"]
         self.p_nevtml = count_dict["evt"]
-        self.logger.debug("Number of data events used for ML: %d", self.p_nevtml)
-        self.logger.debug("Total number of data events: %d", self.p_nevttot)
+        self.logger.info("Number of data events used for ML: %d", self.p_nevtml)
+        self.logger.info("Total number of data events: %d", self.p_nevttot)
         #calculate acceptance correction. we use in this case all
         #the signal from the mc sample, without limiting to the n. signal
         #events used for training
-        denacc = len(self.df_mcgen[self.df_mcgen["ismcprompt"] == 1])
+        #denacc = len(self.df_mcgen[self.df_mcgen["ismcprompt"] == 1])
         numacc = len(self.df_mc[self.df_mc["ismcprompt"] == 1])
+        print(list(self.df_mcgen))
+        denacc = len(self.df_mcgen[(self.df_mcgen["ismcprompt"] == 1) & (self.df_mcgen["dau_in_acc"]==1)])
+        numacc = len(self.df_mcgen[(self.df_mcgen["ismcprompt"] == 1) & (self.df_mcgen["y_cand"] > -0.5) & (self.df_mcgen["y_cand"] < 0.5)])
+        print("den",denacc)
+        print("num",numacc)
         acc, acc_err = calc_eff(numacc, denacc)
-        self.logger.debug("Acceptance: %.3e +/- %.3e", acc, acc_err)
+        self.logger.info("Acceptance: %.3e +/- %.3e", acc, acc_err)
         #calculation of the expected fonll signals
         delta_pt = self.p_binmax - self.p_binmin
         if self.is_fonll_from_root:
@@ -678,8 +688,51 @@ class Optimiser: # pylint: disable=too-many-public-methods
                     df_fonll.query('(pt >= @self.p_binmin) and (pt < @self.p_binmax)')\
                     [self.p_fonllband]
             prod_cross = df_fonll_in_pt.sum() * self.p_fragf * 1e-12 / delta_pt
-            signal_yield = 2. * prod_cross * delta_pt * self.p_br * acc * self.p_taa \
+            print("prod_cross:")
+            print(prod_cross)
+            print("delta_pt:")
+            print(delta_pt)
+            print("acc:")
+            print(acc)
+            print("p_taa:")
+            print(self.p_taa)
+            print("p_br:")
+            print(self.p_br)
+            print("p_sigmamb:")
+            print(self.p_sigmamb)
+            print("p_fprompt:")
+            print(self.p_fprompt)
+            print("p_raahp:")
+            print(self.p_raahp)
+
+            f = TFile.Open('/home/cbartels/Scripts/CrossSection/LcpK0sCorrectedYieldPerEvent_010_3050.root', 'read')
+            pK0s = f.Get('hAAC_1')
+            test = pK0s.GetArray()
+            meascross = test[5]
+            #test.SetSize(pK0s.GetNbinsX())
+            #test = np.array(test)
+            print("binmin")
+            print(self.p_binmin)
+
+            if self.p_binmin == 4:
+                meascross = test[2]
+            elif self.p_binmin == 6:
+                meascross = test[3]
+            elif self.p_binmin == 8: 
+                meascross = test[4]
+            elif self.p_binmin == 12:
+                meascross = test[5]
+            else :
+                meascross = prod_cross
+                print("ERROR: NO cross section found")
+            print("new thing:")
+            print(meascross)
+            print("old thing:")
+            print(prod_cross)
+            signal_yield = 2. * meascross * delta_pt * self.p_br * acc \
                            / (self.p_sigmamb * self.p_fprompt)
+            #signal_yield = 2. * prod_cross * delta_pt * self.p_br * acc * self.p_taa \
+            #               / (self.p_sigmamb * self.p_fprompt)
             #now we plot the fonll expectation
             fig = plt.figure(figsize=(20, 15))
             plt.subplot(111)
@@ -691,11 +744,12 @@ class Optimiser: # pylint: disable=too-many-public-methods
             plt.savefig(f'{self.dirmlplot}/FONLL_curve_{self.s_suffix}.png')
             plt.close(fig)
 
-        self.logger.debug("Expected signal yield: %.3e", signal_yield)
+        self.logger.info("Expected signal yield: %.3e", signal_yield)
         signal_yield = self.p_raahp * signal_yield
-        self.logger.debug("Expected signal yield x RAA hp: %.3e", signal_yield)
+        self.logger.info("Expected signal yield x RAA hp: %.3e", signal_yield)
 
         df_data_sideband = self.df_data.query(self.s_selbkgml)
+        #print(df_data_sideband["inv_mass"])
         df_data_sideband = shuffle(df_data_sideband, random_state=self.rnd_shuffle)
         df_data_sideband = df_data_sideband.tail(round(len(df_data_sideband) * self.p_bkgfracopt))
         hmass = TH1F('hmass', '', self.p_num_bins, self.p_mass_fit_lim[0], self.p_mass_fit_lim[1])
@@ -708,7 +762,7 @@ class Optimiser: # pylint: disable=too-many-public-methods
         gaus_fit.SetParameters(0, hmass.Integral())
         gaus_fit.SetParameters(1, self.p_mass)
         gaus_fit.SetParameters(2, 0.02)
-        self.logger.debug("To fit the signal a gaussian function is used")
+        self.logger.info("To fit the signal a gaussian function is used")
         fitsucc = hmass.Fit("gaus_fit", "RQ")
 
         if int(fitsucc) != 0:
@@ -716,8 +770,8 @@ class Optimiser: # pylint: disable=too-many-public-methods
             sigma = 0.
 
         sigma = gaus_fit.GetParameter(2)
-        self.logger.debug("Mean of the gaussian: %.3e", gaus_fit.GetParameter(1))
-        self.logger.debug("Sigma of the gaussian: %.3e", sigma)
+        self.logger.info("Mean of the gaussian: %.3e", gaus_fit.GetParameter(1))
+        self.logger.info("Sigma of the gaussian: %.3e", sigma)
         sig_region = [self.p_mass - 3 * sigma, self.p_mass + 3 * sigma]
         fig_signif_pevt = plt.figure(figsize=(20, 15))
         plt.xlabel('Threshold', fontsize=20)
@@ -743,12 +797,26 @@ class Optimiser: # pylint: disable=too-many-public-methods
                                                    self.v_invmass)
             sig_array = [eff * signal_yield for eff in eff_array]
             sig_err_array = [eff_err * signal_yield for eff_err in eff_err_array]
+            print("sig_array:")
+            print(sig_array)
+            print("bkg_array first:")
+            print(bkg_array)
+            print("p_bkgfracopt:")
+            print(self.p_bkgfracopt)
+            print("p_nevtml:")
+            print(self.p_nevtml)
             bkg_array = [bkg / (self.p_bkgfracopt * self.p_nevtml) for bkg in bkg_array]
+            print("bkg_array:")
+            print(bkg_array)
             bkg_err_array = [bkg_err / (self.p_bkgfracopt * self.p_nevtml) \
                              for bkg_err in bkg_err_array]
             signif_array, signif_err_array = calc_signif(sig_array, sig_err_array, bkg_array,
                                                          bkg_err_array)
+            #print("eff: bkg: signif:")
+            #for x in range(len(signif_array)):
+            #    print(eff_array[x]," ",bkg_array[x]," ",signif_array[x])
             plt.figure(fig_signif_pevt.number)
+            plt.ylim(-1,10)
             plt.errorbar(x_axis, signif_array, yerr=signif_err_array, label=f'{name}',
                          elinewidth=2.5, linewidth=5.0)
             signif_array_ml = [sig * sqrt(self.p_nevtml) for sig in signif_array]
@@ -764,6 +832,7 @@ class Optimiser: # pylint: disable=too-many-public-methods
             #plt.figure(fig_signif.number)
             #plt.errorbar(x_axis, signif_array_tot, yerr=signif_err_array_tot,
             #             label=f'{name}_Tot', elinewidth=2.5, linewidth=5.0)
+            #plt.ylim(-1,10)
             plt.figure(fig_signif_pevt.number)
             plt.legend(loc="upper left", prop={'size': 30})
             plt.savefig(f'{self.dirmlplot}/Significance_PerEvent_{self.s_suffix}.png')
@@ -772,6 +841,7 @@ class Optimiser: # pylint: disable=too-many-public-methods
             mpl.rcParams.update({"text.usetex": True})
             plt.savefig(f'{self.dirmlplot}/Significance_{self.s_suffix}.png')
             mpl.rcParams.update({"text.usetex": False})
+            #plt.ylim(-1,10)
 
             with open(f'{self.dirmlplot}/Significance_{self.s_suffix}.pickle', 'wb') as out:
                 pickle.dump(fig_signif, out)

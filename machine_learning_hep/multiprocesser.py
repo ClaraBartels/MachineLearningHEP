@@ -144,6 +144,8 @@ class MultiProcesser: # pylint: disable=too-many-instance-attributes, too-many-s
 
     def multi_mergeml_allperiods(self):
         for indexp in range(self.prodnumber):
+            print("index")
+            print(indexp)
             self.process_listsample[indexp].process_mergeforml()
 
     def multi_mergeml_allinone(self):

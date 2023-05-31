@@ -65,7 +65,6 @@ class Processer: # pylint: disable=too-many-instance-attributes
         self.lpt_anbinmin = datap["sel_skim_binmin"]
         self.lpt_anbinmax = datap["sel_skim_binmax"]
         self.p_nptbins = len(self.lpt_anbinmin)
-
         self.p_frac_merge = p_frac_merge
         try:
             iter(p_frac_merge)
@@ -158,7 +157,7 @@ class Processer: # pylint: disable=too-many-instance-attributes
 
         self.l_root = createlist(self.d_root, self.l_path, self.n_root)
         self.l_reco = createlist(self.d_pkl, self.l_path, self.n_reco)
-        self.l_evt = createlist(self.d_pkl, self.l_path, self.n_evt)
+        self.l_evt = createlist(self.d_pkl, self.l_path, self.n_evt)       
         self.l_evtorig = createlist(self.d_pkl, self.l_path, self.n_evtorig)
         self.l_histomass = createlist(self.d_results, self.l_path, self.n_filemass)
         self.l_histoeff = createlist(self.d_results, self.l_path, self.n_fileeff)
@@ -249,9 +248,14 @@ class Processer: # pylint: disable=too-many-instance-attributes
             self.lpt_recodec = [self.n_reco.replace(".pkl", "%d_%d_std.pkl" % \
                                (self.lpt_anbinmin[i], self.lpt_anbinmax[i])) \
                                                     for i in range(self.p_nptbins)]
-
         self.mptfiles_recosk = [createlist(self.d_pklsk, self.l_path, \
                                 self.lpt_recosk[ipt]) for ipt in range(self.p_nptbins)]
+        print("filled as")
+        print(len(self.mptfiles_recosk[0]))
+        #if len(self.mptfiles_recosk[0]) == 0:
+        #    self.mptfiles_recosk = [[0,1,2],[3,4,5],[6,7,8]]
+        #print(self.mptfiles_recosk[0])
+
         self.mptfiles_recoskmldec = [createlist(self.d_pkl_dec, self.l_path, \
                                    self.lpt_recodec[ipt]) for ipt in range(self.p_nptbins)]
         self.lpt_recodecmerged = [os.path.join(self.d_pkl_decmerged, self.lpt_recodec[ipt])
@@ -271,6 +275,8 @@ class Processer: # pylint: disable=too-many-instance-attributes
         self.analysis_cuts = None
         # Flag if they should be used
         self.do_custom_analysis_cuts = datap["analysis"][self.typean].get("use_cuts", False)
+
+
 
     def unpack(self, file_index):
         treeevtorig = uproot.open(self.l_root[file_index])[self.n_treeevt]
@@ -455,9 +461,17 @@ class Processer: # pylint: disable=too-many-instance-attributes
         arguments = [(i,) for i in range(len(self.mptfiles_recosk[0]))]
         self.parallelizer(self.applymodel, arguments, self.p_chunksizeskim)
 
+
     def process_mergeforml(self):
+        #print("before for loop")
+        #print(len(self.mptfiles_recosk[0]))
+        #print(self.mptfiles_recosk)
         indices_for_evt = []
+        #print(self.p_nptbins)
         for ipt in range(self.p_nptbins):
+            #print("in for loop")
+            #print(self.mptfiles_recosk[ipt])
+            print(len(self.mptfiles_recosk[ipt]))
             nfiles = len(self.mptfiles_recosk[ipt])
             if not nfiles:
                 print("There are no files to be merged")
@@ -474,8 +488,14 @@ class Processer: # pylint: disable=too-many-instance-attributes
                 merge_method(list_sel_gensk, self.lpt_gen_ml[ipt])
 
         print("Count events...")
+        #print("indices for evt")
+        #print(indices_for_evt)
         list_sel_evt = [self.l_evt[j] for j in indices_for_evt]
         list_sel_evtorig = [self.l_evtorig[j] for j in indices_for_evt]
+        #print("list_sel_evt")
+        #print(list_sel_evt)
+        print("length of list_sel_evt")
+        print(len(list_sel_evt))
         count_dict = {"evt": count_df_length_pkl(*list_sel_evt),
                       "evtorig": count_df_length_pkl(*list_sel_evtorig)}
         dump_yaml_from_dict(count_dict, self.f_evt_count_ml)

@@ -67,6 +67,7 @@ def getclf_scikit(model_config):
             except AttributeError:
                 logger.critical("Could not load scikit model %s", c)
 
+
     return classifiers, names, grid_search_params, bayesian_opt
 
 

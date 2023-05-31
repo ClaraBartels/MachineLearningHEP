@@ -1,0 +1,372 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 2147483648 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   The process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2659), pid=56132, tid=56134
+#
+# JRE version:  
+(12.0.1+12) (build )
+# Java VM: OpenJDK 64-Bit Server VM (12.0.1+12, mixed mode, aot, sharing, tiered, compressed oops, g1 gc, linux-amd64)
+# Core dump will be written. Default location: Core dumps may be processed with "/usr/share/apport/apport -p%p -s%s -c%c -d%d -P%P -u%u -g%g -- %E" (or dumping to /home/cbartels/MachineLearningHEP/cplusutilities/core.56132)
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: 
+
+Host: Intel(R) Xeon(R) Gold 6132 CPU @ 2.60GHz, 56 cores, 377G, Ubuntu 18.04.6 LTS
+Time: Thu Feb 16 10:52:16 2023 CET elapsed time: 0 seconds (0d 0h 0m 0s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f58f0013000):  JavaThread "Unknown thread" [_thread_in_vm, id=56134, stack(0x00007f58f6861000,0x00007f58f6962000)]
+
+Stack: [0x00007f58f6861000,0x00007f58f6962000],  sp=0x00007f58f69602d0,  free space=1020k
+Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0xf739f0]  VMError::report_and_die(int, char const*, char const*, __va_list_tag*, Thread*, unsigned char*, void*, void*, char const*, int, unsigned long)+0x310
+V  [libjvm.so+0xf745bb]  VMError::report_and_die(Thread*, char const*, int, unsigned long, VMErrorType, char const*, __va_list_tag*)+0x2b
+V  [libjvm.so+0x684155]  report_vm_out_of_memory(char const*, int, unsigned long, VMErrorType, char const*, ...)+0xd5
+V  [libjvm.so+0xc26e78]  os::pd_commit_memory_or_exit(char*, unsigned long, unsigned long, bool, char const*)+0x108
+V  [libjvm.so+0xc1e65d]  os::commit_memory_or_exit(char*, unsigned long, unsigned long, bool, char const*)+0x1d
+V  [libjvm.so+0x7ada2c]  G1PageBasedVirtualSpace::commit_preferred_pages(unsigned long, unsigned long)+0x6c
+V  [libjvm.so+0x7addc4]  G1PageBasedVirtualSpace::commit(unsigned long, unsigned long)+0x154
+V  [libjvm.so+0x7bba60]  G1RegionsLargerThanCommitSizeMapper::commit_regions(unsigned int, unsigned long, WorkGang*)+0x40
+V  [libjvm.so+0x83cb10]  HeapRegionManager::commit_regions(unsigned int, unsigned long, WorkGang*)+0x80
+V  [libjvm.so+0x83d87f]  HeapRegionManager::make_regions_available(unsigned int, unsigned int, WorkGang*)+0x3f
+V  [libjvm.so+0x83de09]  HeapRegionManager::expand_at(unsigned int, unsigned int, WorkGang*)+0x119
+V  [libjvm.so+0x764340]  G1CollectedHeap::expand(unsigned long, WorkGang*, double*)+0xe0
+V  [libjvm.so+0x764bb6]  G1CollectedHeap::initialize()+0x7f6
+V  [libjvm.so+0xf2ffb1]  Universe::initialize_heap()+0x41
+V  [libjvm.so+0xf302a0]  universe_init()+0x70
+V  [libjvm.so+0x8629c7]  init_globals()+0x57
+V  [libjvm.so+0xf082ef]  Threads::create_vm(JavaVMInitArgs*, bool*)+0x35f
+V  [libjvm.so+0x921891]  JNI_CreateJavaVM+0x51
+C  [libjli.so+0x4ab6]  JavaMain+0x86
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x00007f58f5b186c0, length=0, elements={
+}
+
+Java Threads: ( => current thread )
+
+Other Threads:
+  0x00007f58f0092000 GCTaskThread "GC Thread#0" [stack: 0x00007f588d1b5000,0x00007f588d2b5000] [id=56135]
+  0x00007f58f00c1800 ConcurrentGCThread "G1 Main Marker" [stack: 0x00007f588d0b3000,0x00007f588d1b3000] [id=56136]
+  0x00007f58f00c3000 ConcurrentGCThread "G1 Conc#0" [stack: 0x00007f588cfb1000,0x00007f588d0b1000] [id=56137]
+
+[error occurred during error reporting (printing all threads), id 0xb, SIGSEGV (0xb) at pc=0x00007f58f4c6a2e0]
+
+VM state:not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00007f58f000f4d0] Heap_lock - owner thread: 0x00007f58f0013000
+
+Heap address: 0x0000000082000000, size: 30688 MB, Compressed Oops mode: Non-zero based: 0x0000000082000000
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 0
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+Events (0 events):
+No events
+
+
+Dynamic libraries:
+00400000-00401000 r-xp 00000000 08:62 202058213                          /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/bin/java
+00600000-00601000 r--p 00000000 08:62 202058213                          /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/bin/java
+00601000-00602000 rw-p 00001000 08:62 202058213                          /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/bin/java
+01dc8000-01de9000 rw-p 00000000 00:00 0                                  [heap]
+102000000-800000000 ---p 00000000 00:00 0 
+7f587c4f7000-7f5880000000 rw-p 00000000 00:00 0 
+7f5880000000-7f5880021000 rw-p 00000000 00:00 0 
+7f5880021000-7f5884000000 ---p 00000000 00:00 0 
+7f5884000000-7f5884021000 rw-p 00000000 00:00 0 
+7f5884021000-7f5888000000 ---p 00000000 00:00 0 
+7f5888000000-7f5888021000 rw-p 00000000 00:00 0 
+7f5888021000-7f588c000000 ---p 00000000 00:00 0 
+7f588c0a0000-7f588cfaf000 rw-p 00000000 00:00 0 
+7f588cfaf000-7f588cfb0000 ---p 00000000 00:00 0 
+7f588cfb0000-7f588d0b1000 rw-p 00000000 00:00 0 
+7f588d0b1000-7f588d0b2000 ---p 00000000 00:00 0 
+7f588d0b2000-7f588d1b3000 rw-p 00000000 00:00 0 
+7f588d1b3000-7f588d1b4000 ---p 00000000 00:00 0 
+7f588d1b4000-7f588db32000 rw-p 00000000 00:00 0 
+7f588db32000-7f58d4e02000 ---p 00000000 00:00 0 
+7f58d4e02000-7f58d751d000 rw-p 00000000 00:00 0 
+7f58d751d000-7f58d7601000 ---p 00000000 00:00 0 
+7f58d7601000-7f58d7871000 rwxp 00000000 00:00 0 
+7f58d7871000-7f58d7dcf000 ---p 00000000 00:00 0 
+7f58d7dcf000-7f58d803f000 rwxp 00000000 00:00 0 
+7f58d803f000-7f58df1e8000 ---p 00000000 00:00 0 
+7f58df1e8000-7f58df458000 rwxp 00000000 00:00 0 
+7f58df458000-7f58e6601000 ---p 00000000 00:00 0 
+7f58e6601000-7f58eed57000 r--s 00000000 08:62 202058286                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/modules
+7f58eed57000-7f58eed72000 r-xp 00000000 08:62 202058295                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjimage.so
+7f58eed72000-7f58eef72000 ---p 0001b000 08:62 202058295                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjimage.so
+7f58eef72000-7f58eef74000 r--p 0001b000 08:62 202058295                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjimage.so
+7f58eef74000-7f58eef75000 rw-p 0001d000 08:62 202058295                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjimage.so
+7f58eef75000-7f58eef7c000 r-xp 00000000 08:62 202058325                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libzip.so
+7f58eef7c000-7f58ef17b000 ---p 00007000 08:62 202058325                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libzip.so
+7f58ef17b000-7f58ef17c000 r--p 00006000 08:62 202058325                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libzip.so
+7f58ef17c000-7f58ef17d000 rw-p 00007000 08:62 202058325                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libzip.so
+7f58ef17d000-7f58ef188000 r-xp 00000000 08:62 128194473                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f58ef188000-7f58ef387000 ---p 0000b000 08:62 128194473                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f58ef387000-7f58ef388000 r--p 0000a000 08:62 128194473                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f58ef388000-7f58ef389000 rw-p 0000b000 08:62 128194473                  /lib/x86_64-linux-gnu/libnss_files-2.27.so
+7f58ef389000-7f58ef38f000 rw-p 00000000 00:00 0 
+7f58ef38f000-7f58ef3a6000 r-xp 00000000 08:62 128193171                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f58ef3a6000-7f58ef5a5000 ---p 00017000 08:62 128193171                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f58ef5a5000-7f58ef5a6000 r--p 00016000 08:62 128193171                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f58ef5a6000-7f58ef5a7000 rw-p 00017000 08:62 128193171                  /lib/x86_64-linux-gnu/libnsl-2.27.so
+7f58ef5a7000-7f58ef5a9000 rw-p 00000000 00:00 0 
+7f58ef5a9000-7f58ef5b4000 r-xp 00000000 08:62 128194475                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f58ef5b4000-7f58ef7b3000 ---p 0000b000 08:62 128194475                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f58ef7b3000-7f58ef7b4000 r--p 0000a000 08:62 128194475                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f58ef7b4000-7f58ef7b5000 rw-p 0000b000 08:62 128194475                  /lib/x86_64-linux-gnu/libnss_nis-2.27.so
+7f58ef7b5000-7f58ef7bd000 r-xp 00000000 08:62 128193180                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f58ef7bd000-7f58ef9bd000 ---p 00008000 08:62 128193180                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f58ef9bd000-7f58ef9be000 r--p 00008000 08:62 128193180                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f58ef9be000-7f58ef9bf000 rw-p 00009000 08:62 128193180                  /lib/x86_64-linux-gnu/libnss_compat-2.27.so
+7f58ef9bf000-7f58ef9e7000 r-xp 00000000 08:62 202058285                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjava.so
+7f58ef9e7000-7f58efbe6000 ---p 00028000 08:62 202058285                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjava.so
+7f58efbe6000-7f58efbe7000 r--p 00027000 08:62 202058285                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjava.so
+7f58efbe7000-7f58efbe9000 rw-p 00028000 08:62 202058285                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjava.so
+7f58efbe9000-7f58efbf6000 r-xp 00000000 08:62 202058292                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libverify.so
+7f58efbf6000-7f58efdf5000 ---p 0000d000 08:62 202058292                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libverify.so
+7f58efdf5000-7f58efdf7000 r--p 0000c000 08:62 202058292                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libverify.so
+7f58efdf7000-7f58efdf8000 rw-p 0000e000 08:62 202058292                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libverify.so
+7f58efdf8000-7f58efdff000 r-xp 00000000 08:62 128194495                  /lib/x86_64-linux-gnu/librt-2.27.so
+7f58efdff000-7f58efffe000 ---p 00007000 08:62 128194495                  /lib/x86_64-linux-gnu/librt-2.27.so
+7f58efffe000-7f58effff000 r--p 00006000 08:62 128194495                  /lib/x86_64-linux-gnu/librt-2.27.so
+7f58effff000-7f58f0000000 rw-p 00007000 08:62 128194495                  /lib/x86_64-linux-gnu/librt-2.27.so
+7f58f0000000-7f58f0171000 rw-p 00000000 00:00 0 
+7f58f0171000-7f58f4000000 ---p 00000000 00:00 0 
+7f58f4062000-7f58f4067000 rw-p 00000000 00:00 0 
+7f58f4067000-7f58f414b000 ---p 00000000 00:00 0 
+7f58f414b000-7f58f42e8000 r-xp 00000000 08:62 128190110                  /lib/x86_64-linux-gnu/libm-2.27.so
+7f58f42e8000-7f58f44e7000 ---p 0019d000 08:62 128190110                  /lib/x86_64-linux-gnu/libm-2.27.so
+7f58f44e7000-7f58f44e8000 r--p 0019c000 08:62 128190110                  /lib/x86_64-linux-gnu/libm-2.27.so
+7f58f44e8000-7f58f44e9000 rw-p 0019d000 08:62 128190110                  /lib/x86_64-linux-gnu/libm-2.27.so
+7f58f44e9000-7f58f57a1000 r-xp 00000000 08:62 202135605                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/libjvm.so
+7f58f57a1000-7f58f59a1000 ---p 012b8000 08:62 202135605                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/libjvm.so
+7f58f59a1000-7f58f5a66000 r--p 012b8000 08:62 202135605                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/libjvm.so
+7f58f5a66000-7f58f5aa1000 rw-p 0137d000 08:62 202135605                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/server/libjvm.so
+7f58f5aa1000-7f58f5b24000 rw-p 00000000 00:00 0 
+7f58f5b24000-7f58f5d0b000 r-xp 00000000 08:62 128188811                  /lib/x86_64-linux-gnu/libc-2.27.so
+7f58f5d0b000-7f58f5f0b000 ---p 001e7000 08:62 128188811                  /lib/x86_64-linux-gnu/libc-2.27.so
+7f58f5f0b000-7f58f5f0f000 r--p 001e7000 08:62 128188811                  /lib/x86_64-linux-gnu/libc-2.27.so
+7f58f5f0f000-7f58f5f11000 rw-p 001eb000 08:62 128188811                  /lib/x86_64-linux-gnu/libc-2.27.so
+7f58f5f11000-7f58f5f15000 rw-p 00000000 00:00 0 
+7f58f5f15000-7f58f5f18000 r-xp 00000000 08:62 128188930                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7f58f5f18000-7f58f6117000 ---p 00003000 08:62 128188930                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7f58f6117000-7f58f6118000 r--p 00002000 08:62 128188930                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7f58f6118000-7f58f6119000 rw-p 00003000 08:62 128188930                  /lib/x86_64-linux-gnu/libdl-2.27.so
+7f58f6119000-7f58f6133000 r-xp 00000000 08:62 128194493                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f58f6133000-7f58f6332000 ---p 0001a000 08:62 128194493                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f58f6332000-7f58f6333000 r--p 00019000 08:62 128194493                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f58f6333000-7f58f6334000 rw-p 0001a000 08:62 128194493                  /lib/x86_64-linux-gnu/libpthread-2.27.so
+7f58f6334000-7f58f6338000 rw-p 00000000 00:00 0 
+7f58f6338000-7f58f6348000 r-xp 00000000 08:62 202058299                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjli.so
+7f58f6348000-7f58f6547000 ---p 00010000 08:62 202058299                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjli.so
+7f58f6547000-7f58f6548000 r--p 0000f000 08:62 202058299                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjli.so
+7f58f6548000-7f58f6549000 rw-p 00010000 08:62 202058299                  /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/lib/libjli.so
+7f58f6549000-7f58f655e000 r-xp 00000000 00:3b 197186                     /cvmfs/alice.cern.ch/el6-x86_64/Packages/zlib/v1.2.8-49/lib/libz.so.1.2.8
+7f58f655e000-7f58f675d000 ---p 00015000 00:3b 197186                     /cvmfs/alice.cern.ch/el6-x86_64/Packages/zlib/v1.2.8-49/lib/libz.so.1.2.8
+7f58f675d000-7f58f675e000 r--p 00014000 00:3b 197186                     /cvmfs/alice.cern.ch/el6-x86_64/Packages/zlib/v1.2.8-49/lib/libz.so.1.2.8
+7f58f675e000-7f58f675f000 rw-p 00015000 00:3b 197186                     /cvmfs/alice.cern.ch/el6-x86_64/Packages/zlib/v1.2.8-49/lib/libz.so.1.2.8
+7f58f675f000-7f58f6788000 r-xp 00000000 08:62 128188593                  /lib/x86_64-linux-gnu/ld-2.27.so
+7f58f6861000-7f58f6865000 ---p 00000000 00:00 0 
+7f58f6865000-7f58f6967000 rw-p 00000000 00:00 0 
+7f58f6969000-7f58f696e000 rw-p 00000000 00:00 0 
+7f58f696e000-7f58f6979000 ---p 00000000 00:00 0 
+7f58f6979000-7f58f6981000 rw-s 00000000 08:62 133449579                  /tmp/hsperfdata_cbartels/56132
+7f58f6981000-7f58f6982000 ---p 00000000 00:00 0 
+7f58f6982000-7f58f6983000 r--p 00000000 00:00 0 
+7f58f6983000-7f58f6984000 ---p 00000000 00:00 0 
+7f58f6984000-7f58f6988000 rw-p 00000000 00:00 0 
+7f58f6988000-7f58f6989000 r--p 00029000 08:62 128188593                  /lib/x86_64-linux-gnu/ld-2.27.so
+7f58f6989000-7f58f698a000 rw-p 0002a000 08:62 128188593                  /lib/x86_64-linux-gnu/ld-2.27.so
+7f58f698a000-7f58f698b000 rw-p 00000000 00:00 0 
+7ffd78a38000-7ffd78a61000 rw-p 00000000 00:00 0                          [stack]
+7ffd78b28000-7ffd78b2b000 r--p 00000000 00:00 0                          [vvar]
+7ffd78b2b000-7ffd78b2d000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]
+
+
+VM Arguments:
+java_command: <unknown>
+java_class_path (initial): /home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JAliEn/ed27642853-1/lib/alien-users.jar
+Launcher Type: SUN_STANDARD
+
+[Global flags]
+     intx CICompilerCount                          = 15                                        {product} {ergonomic}
+     uint ConcGCThreads                            = 10                                        {product} {ergonomic}
+     uint G1ConcRefinementThreads                  = 38                                        {product} {ergonomic}
+   size_t G1HeapRegionSize                         = 4194304                                   {product} {ergonomic}
+    uintx GCDrainStackTargetSize                   = 64                                        {product} {ergonomic}
+   size_t InitialHeapSize                          = 2147483648                                {product} {ergonomic}
+   size_t MarkStackSize                            = 4194304                                   {product} {ergonomic}
+   size_t MaxHeapSize                              = 32178700288                               {product} {ergonomic}
+   size_t MinHeapDeltaBytes                        = 4194304                                   {product} {ergonomic}
+    uintx NonNMethodCodeHeapSize                   = 8182140                                {pd product} {ergonomic}
+    uintx NonProfiledCodeHeapSize                  = 121738050                              {pd product} {ergonomic}
+    uintx ProfiledCodeHeapSize                     = 121738050                              {pd product} {ergonomic}
+    uintx ReservedCodeCacheSize                    = 251658240                              {pd product} {ergonomic}
+     bool SegmentedCodeCache                       = true                                      {product} {ergonomic}
+     bool UseCompressedClassPointers               = true                                 {lp64_product} {ergonomic}
+     bool UseCompressedOops                        = true                                 {lp64_product} {ergonomic}
+     bool UseG1GC                                  = true                                      {product} {ergonomic}
+
+Logging:
+Log output configuration:
+ #0: stdout all=warning uptime,level,tags
+ #1: stderr all=off uptime,level,tags
+
+Environment Variables:
+JAVA_HOME=/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1
+CLASSPATH=/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JAliEn/ed27642853-1/lib/alien-users.jar
+PATH=/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JAliEn/ed27642853-1/bin:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/Python-modules/1.0-1/share/python-modules/bin:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/XRootD/v4.12.1-1/bin:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/AliEn-Runtime/v2-19-le-1/bin:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/OpenSSL/v1.0.2o-1/bin:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/JDK/12.0.1-1/bin:/home/cbartels/.virtualenvs/ml/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/AliPhysics/vAN-20220212_ROOT6-1/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/treelite/8498081-16/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/RooUnfold/V02-00-01-alice5-38/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/AliRoot/v5-09-57g_ROOT6-1/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/JAliEn-ROOT/0.6.3-6/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/xjalienfs/1.2.8-10/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/Vc/1.4.1-32/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/GEANT4_VMC/v5-0-p5-33/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/GEANT4/v10.5.1-27/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/GEANT3/v3-5-34/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/fastjet/v3.2.1_1.024-alice3-109/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/cgal/4.6.3-82/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/boost/v1.74.0-16/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/DPMJET/v3.0.5-alice5-14/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/ROOT/v6-20-08-alice1-9/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/XRootD/v4.12.5-10/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/libxml2/v2.9.3-32/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/OpenSSL/v1.0.2o-32/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/GSL/v1.16-53/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/lzma/v5.2.3-23/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/Python-modules/1.0-105/share/python-modules/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/Python/v3.6.10-56/bin:/cvmfs/alice.cern.ch/el6-x86_64/Packages/sqlite/v3.15.0-20/bin:/cvmfs/alice.cern.ch/el6-x86_6
+LD_LIBRARY_PATH=/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/Python-modules/1.0-1/share/python-modules/lib:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/XRootD/v4.12.1-1/lib:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/AliEn-Runtime/v2-19-le-1/lib:/home/pyadmin/JAliEn/sw/ubuntu1804_x86-64/OpenSSL/v1.0.2o-1/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/AliPhysics/vAN-20220212_ROOT6-1/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/KFParticle/v1.1-3-10/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/treelite/8498081-16/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/RooUnfold/V02-00-01-alice5-38/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/AliRoot/v5-09-57g_ROOT6-1/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/JAliEn-ROOT/0.6.3-6/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/Vc/1.4.1-32/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/GEANT4_VMC/v5-0-p5-33/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/vgm/v4-7-47/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/GEANT4/v10.5.1-27/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/GEANT3/v3-5-34/lib64:/cvmfs/alice.cern.ch/el6-x86_64/Packages/fastjet/v3.2.1_1.024-alice3-109/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/cgal/4.6.3-82/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/boost/v1.74.0-16/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/DPMJET/v3.0.5-alice5-14/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/ROOT/v6-20-08-alice1-9/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/XRootD/v4.12.5-10/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/libxml2/v2.9.3-32/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/OpenSSL/v1.0.2o-32/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/GSL/v1.16-53/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/lzma/v5.2.3-23/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/Python-modules/1.0-105/share/python-modules/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/Python/v3.6.10-56/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/libffi/v3.2.1-18/lib64:/cvmfs/alice.cern.ch/el6-x86_64/Packages/sqlite/v3.15.0-20/lib:/cvmfs/alice.cern.ch/el6-x86_64/Packages/libpng/v1.6.34-66/lib:/c
+SHELL=/bin/bash
+DISPLAY=localhost:11.0
+LIBPATH=/home/pyadmin/root_cern/lib
+DYLD_LIBRARY_PATH=/home/pyadmin/root_cern/lib
+
+Signal Handlers:
+SIGSEGV: [libjvm.so+0xf75390], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGBUS: [libjvm.so+0xf75390], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGFPE: [libjvm.so+0xf75390], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGPIPE: [libjvm.so+0xc22db0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGXFSZ: [libjvm.so+0xc22db0], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGILL: [libjvm.so+0xf75390], sa_mask[0]=11111111011111111101111111111110, sa_flags=SA_RESTART|SA_SIGINFO
+SIGUSR2: [libjvm.so+0xc22c50], sa_mask[0]=00000000000000000000000000000000, sa_flags=SA_RESTART|SA_SIGINFO
+SIGHUP: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGINT: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGTERM: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+SIGQUIT: SIG_DFL, sa_mask[0]=00000000000000000000000000000000, sa_flags=none
+
+
+---------------  S Y S T E M  ---------------
+
+OS:DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION="Ubuntu 18.04.6 LTS"
+uname:Linux 4.15.0-200-generic #211-Ubuntu SMP Thu Nov 24 18:16:04 UTC 2022 x86_64
+libc:glibc 2.27 NPTL 2.27 
+rlimit: STACK 8192k, CORE 0k, NPROC 1544523, NOFILE 1048576, AS infinity, DATA infinity, FSIZE infinity
+load average:86.58 105.44 96.03
+
+/proc/meminfo:
+MemTotal:       395902148 kB
+MemFree:          960796 kB
+MemAvailable:    1061548 kB
+Buffers:           55140 kB
+Cached:         29438848 kB
+SwapCached:            0 kB
+Active:         360912228 kB
+Inactive:       28614256 kB
+Active(anon):   360035392 kB
+Inactive(anon): 27836064 kB
+Active(file):     876836 kB
+Inactive(file):   778192 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:               492 kB
+Writeback:             0 kB
+AnonPages:      360014084 kB
+Mapped:         28139968 kB
+Shmem:          27838516 kB
+Slab:            1432152 kB
+SReclaimable:     587816 kB
+SUnreclaim:       844336 kB
+KernelStack:       93632 kB
+PageTables:      2172392 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    197951072 kB
+Committed_AS:   463113304 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:           0 kB
+VmallocChunk:          0 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:    198656 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:    28522012 kB
+DirectMap2M:    368529408 kB
+DirectMap1G:     5242880 kB
+
+
+/proc/sys/kernel/threads-max (system-wide limit on the number of threads):
+3089046
+
+
+/proc/sys/vm/max_map_count (maximum number of memory map areas a process may have):
+65530
+
+
+/proc/sys/kernel/pid_max (system-wide limit on number of process identifiers):
+57344
+
+
+
+container (cgroup) information:
+container_type: cgroupv1
+cpu_cpuset_cpus: 0-55
+cpu_memory_nodes: 0-3
+active_processor_count: 56
+cpu_quota: -1
+cpu_period: 100000
+cpu_shares: -1
+memory_limit_in_bytes: -1
+memory_and_swap_limit_in_bytes: -2
+memory_soft_limit_in_bytes: -1
+memory_usage_in_bytes: 400738803712
+memory_max_usage_in_bytes: 401324105728
+
+
+CPU:total 56 (initial active 56) (14 cores per cpu, 2 threads per core) family 6 model 85 stepping 4, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, rtm, 3dnowpref, lzcnt, ht, tsc, tscinvbit, bmi1, bmi2, adx, evex, fma
+CPU Model and flags from /proc/cpuinfo:
+model name	: Intel(R) Xeon(R) Gold 6132 CPU @ 2.60GHz
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb rdtscp lm constant_tsc art arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand lahf_lm abm 3dnowprefetch cpuid_fault epb cat_l3 cdp_l3 invpcid_single pti intel_ppin ssbd mba ibrs ibpb stibp tpr_shadow vnmi flexpriority ept vpid fsgsbase tsc_adjust bmi1 hle avx2 smep bmi2 erms invpcid rtm cqm mpx rdt_a avx512f avx512dq rdseed adx smap clflushopt clwb intel_pt avx512cd avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local dtherm ida arat pln pts pku ospke md_clear flush_l1d arch_capabilities
+
+Memory: 4k page, physical 395902148k(962620k free), swap 0k(0k free)
+
+vm_info: OpenJDK 64-Bit Server VM (12.0.1+12) for linux-amd64 JRE (Zulu12.2+3-CA) (12.0.1+12), built on Apr 10 2019 13:13:34 by "zulu_re" with gcc 7.3.1 20180303 (Red Hat 7.3.1-5)
+
+END.
